@@ -3,13 +3,10 @@ import operator
 import pandas as pd
 from collections import Counter
 
-<<<<<<< HEAD
+
 # path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
 path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-=======
-#path_to_data = 'C:\Nicolas\M2 MVA\ALTEGRAD\Kaggle\text_and_graph\Data'
-path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
->>>>>>> 066c462452e6efa53230a730bc6defccd89f5c2e
+
 
 ##########################
 # load some of the files #                           
