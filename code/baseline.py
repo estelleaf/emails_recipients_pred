@@ -3,7 +3,8 @@ import operator
 import pandas as pd
 from collections import Counter
 
-path_to_data = 'C:\Nicolas\M2 MVA\ALTEGRAD\Kaggle\text_and_graph\Data'
+#path_to_data = 'C:\Nicolas\M2 MVA\ALTEGRAD\Kaggle\text_and_graph\Data'
+path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
 
 ##########################
 # load some of the files #                           
@@ -112,4 +113,4 @@ with open(path_to_results + 'predictions_frequency.txt', 'wb') as my_file:
         freq_preds = preds[2]
         for index, my_preds in enumerate(freq_preds):
             my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
-0
+
