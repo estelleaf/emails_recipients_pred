@@ -39,15 +39,19 @@ all_senders = emails_ids_per_sender.keys()
 # create address book with frequency information for each user
 address_books = {}
 i = 0
-
+ground_truth = {}
 for sender, ids in emails_ids_per_sender.iteritems():
     recs_temp = []
     for my_id in ids:
-        recipients = training_info[training_info['mid']==int(my_id)]['recipients'].tolist()
+        recipients = training_info[training_info['mid'] == int(my_id)]['recipients'].tolist()
         recipients = recipients[0].split(' ')
         # keep only legitimate email addresses
         recipients = [rec for rec in recipients if '@' in rec]
         recs_temp.append(recipients)
+
+        # store the ground truth for the loss function in a dict { 'id_of_the_mail': list(recipients) }
+        ground_truth[my_id] = recipients
+
     # flatten    
     recs_temp = [elt for sublist in recs_temp for elt in sublist]
     # compute recipient counts
@@ -95,7 +99,7 @@ for index, row in test.iterrows():
         random_preds.append(random.sample(all_users, k))
         # for the frequency baseline, the predictions are always the same
         freq_preds.append(k_most)
-    predictions_per_sender[sender] = [ids_predict,random_preds,freq_preds]	
+    predictions_per_sender[sender] = [ids_predict,random_preds, freq_preds]
 
 #################################################
 # write predictions in proper format for Kaggle #                           
@@ -123,4 +127,7 @@ with open(path_to_results + 'predictions_frequency.txt', 'wb') as my_file:
         freq_preds = preds[2]
         for index, my_preds in enumerate(freq_preds):
             my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
+
+
+
 

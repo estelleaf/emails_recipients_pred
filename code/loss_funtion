@@ -6,15 +6,40 @@ Created on Thu Feb  9 16:59:46 2017
 @author: estelleaflalo
 """
 import numpy as np
+import panda as pd
+
 
 def loss(y_true,y_pred):
-    c=0
+    c = 0
     temp=np.zeros(y_pred.shape[0])
     for i in range(y_pred.shape[0]):
         if y_pred[i] in y_true.tolist():
-            c+=1
-            temp[i]=float(c)/(i+1)
+            c += 1
+            temp[i] = float(c)/(i+1)
         else :
-            temp[i]=0
+            temp[i] = 0
     return sum(temp)/min(y_true.shape[0],10)
-     
+
+path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
+# path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
+# path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
+
+
+def test_loss_on_train(path_to_results, id_of_mail, ground_truth, option='random'):
+    """ Pour l'instant on test que par rapport au random pred, mais je laisse l'arg 'option' pour des dvpts futurs"""
+    pred = pd.read_csv(path_to_results + 'predictions_frequency.txt', sep=',', header=0)
+    print pred
+    print id_of_mail
+    return loss(ground_truth[id_of_mail], pred[pred['mid'] == id_of_mail])
+
+
+test_loss_on_train(path_to_results, ground_truth.keys()[0], ground_truth)
+
+
+def get_the_ground_truth_for_loss_function(path_to_data):
+    training_info = pd.read_csv(path_to_data + 'training_info.csv', sep=',', header=0)
+    # convert into numpy array
+    training_info = training_info.values
+
+
+
