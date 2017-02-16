@@ -130,3 +130,41 @@ with open(path_to_results + 'predictions_frequency.txt', 'wb') as my_file:
 
 
 
+#########################################################################################
+# Ajout de Nico : Make random predictions on the training set (for test loss function)###
+#########################################################################################
+train_predictions_per_sender = {}
+
+for index, row in training.iterrows():
+    name_ids = row.tolist()
+    sender = name_ids[0]
+    # get IDs of the emails for which recipient prediction is needed
+    ids_predict = name_ids[1].split(' ')
+    ids_predict = [int(my_id) for my_id in ids_predict]
+    random_preds = []
+    freq_preds = []
+    # select k most frequent recipients for the user
+    k_most = [elt[0] for elt in address_books[sender][:k]]
+    for id_predict in ids_predict:
+        # select k users at random
+        random_preds.append(random.sample(all_users, k))
+        # for the frequency baseline, the predictions are always the same
+        freq_preds.append(k_most)
+    train_predictions_per_sender[sender] = [ids_predict,random_preds, freq_preds]
+
+# Write it in a file the kaggle way
+with open(path_to_results + 'train_predictions_random.txt', 'wb') as my_file:
+    my_file.write('mid,recipients' + '\n')
+    for sender, preds in train_predictions_per_sender.iteritems():
+        ids = preds[0]
+        random_preds = preds[1]
+        for index, my_preds in enumerate(random_preds):
+            my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
+
+with open(path_to_results + 'train_predictions_frequency.txt', 'wb') as my_file:
+    my_file.write('mid,recipients' + '\n')
+    for sender, preds in train_predictions_per_sender.iteritems():
+        ids = preds[0]
+        freq_preds = preds[2]
+        for index, my_preds in enumerate(freq_preds):
+            my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
