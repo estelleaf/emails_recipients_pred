@@ -105,8 +105,8 @@ for index, row in test.iterrows():
 #################################################
 
 
-#path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
+path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
+#path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
 #path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
 
 
@@ -115,6 +115,7 @@ with open(path_to_results + 'predictions_random.txt', 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds in predictions_per_sender.iteritems():
         ids = preds[0]
+        print ids
         random_preds = preds[1]
         for index, my_preds in enumerate(random_preds):
             my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
@@ -165,6 +166,7 @@ with open(path_to_results + 'train_predictions_frequency.txt', 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds in train_predictions_per_sender.iteritems():
         ids = preds[0]
+        print 'ids', ids
         freq_preds = preds[2]
         for index, my_preds in enumerate(freq_preds):
             my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
