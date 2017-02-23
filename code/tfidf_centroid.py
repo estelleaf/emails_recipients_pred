@@ -10,6 +10,8 @@ import operator
 import pandas as pd
 import numpy as np
 from collections import Counter
+from numpy.linalg import norm
+from sklearn.metrics.pairwise import cosine_similarity
 
 path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
 #path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
@@ -72,19 +74,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 training_info_mat=training_info.as_matrix()
 content_train=training_info_mat[:,2]
-vectorizer_train = TfidfVectorizer( max_features=None,stop_words='english',use_idf=True)
+vectorizer_train = TfidfVectorizer(max_df=0.95, min_df=2,stop_words='english',use_idf=True)
 vec_train = vectorizer_train.fit_transform(content_train)
 bow_train=vec_train.toarray()
 
 test_info_mat=test_info.as_matrix()
 content_test=test_info_mat[:,2]
-vectorizer_test = TfidfVectorizer( max_features=None,stop_words='english',use_idf=True)
+vectorizer_test = TfidfVectorizer( max_df=0.95, min_df=2,stop_words='english',use_idf=True)
 vec_test = vectorizer_test.fit_transform(content_test)
 bow_test=vec_test.toarray()
 
-from numpy.linalg import norm
+
 #norma=norm(bow_train, axis=1, ord=2) 
-#bow_train_normed=norm(bow_train.astype(np.float) / norma[:,None],axis=1)
+#bow_train_normed=norm(bow_train.astype(np.float)# / norma[:,None],axis=1)
+
 
 def centroid(r,dataset,bow):
     info_recip_index=dataset[dataset['recipients'].str.contains(r)].index.tolist() #"rick.dietz@enron.com"
@@ -95,12 +98,23 @@ def centroid(r,dataset,bow):
 
 def all_centroids(dataset,bow):
     centroid_d={}
+    i=0
     for r in all_users:
         centroid_d[r]=centroid(r,dataset,bow)
+        i+=1
+        if i%100==0:
+            print i
     return centroid_d
+
     
-centroid("rick.dietz@enron.com",training_info,bow_train)         
+test=centroid("rick.dietz@enron.com",training_info,bow_train)         
 
         
-test=all_centroids(training_info,bow_train)  
+testall=all_centroids(training_info,bow_train)  
+
+def ten_first(dic_centroids,test):
+    
+
+
+    
 

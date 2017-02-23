@@ -14,7 +14,8 @@ import pandas as pd
 from collections import Counter
 from sklearn.model_selection import train_test_split
 
-path_to_data =  'C:/Users/vpell_000/Documents/MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+#path_to_data =  'C:/Users/vpell_000/Documents/MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
 
 ##########################
 # load some of the files #                           
