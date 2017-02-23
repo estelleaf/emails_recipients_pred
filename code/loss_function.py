@@ -50,7 +50,7 @@ def test_score_on_train(path_to_results, ground_truth, option='random'):
     elif option == 'frequency':
         pred = pd.read_csv(path_to_results + 'train_predictions_frequency.txt', sep=',', header=0)
     else:
-        raise ValueError('wrong option type, should be random or frequency ')
+        raise ValueError('wrong option typ, should be random or frequency ')
 
 
     number_of_mail = len(ground_truth.keys())
@@ -65,13 +65,13 @@ def test_score_on_train(path_to_results, ground_truth, option='random'):
 
 
 
-#path_to_data = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+path_to_data = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
+#path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
 # path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
 
 
-path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-#path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
+#path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
+path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
 #path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
 
 
@@ -133,10 +133,10 @@ for sender, ids in emails_ids_per_sender.iteritems():
 
 
 # Fin copié-collé
-# Test du score sur le train en mode brutasse
-option='random'
-total_score = test_score_on_train(path_to_results, ground_truth, option)
-print 'Total score for option \' {} \' is = {} '.format(option, total_score)
+# Test du score sur e train en mode brutasse
+
+total_score = test_score_on_train(path_to_results, ground_truth, option='frequency')
+print 'Total score =', total_score
 
 
 
