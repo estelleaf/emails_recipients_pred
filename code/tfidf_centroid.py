@@ -11,6 +11,8 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 from numpy.linalg import norm
+from sklearn.feature_extraction.text import TfidfVectorizer
+from init import split, init_dic
 from sklearn.metrics.pairwise import cosine_similarity
 
 path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
@@ -26,51 +28,12 @@ test = pd.read_csv(path_to_data + 'test_set.csv', sep=',', header=0)
 
 test_info= pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 
-emails_ids_per_sender = {}
-for index, series in training.iterrows():
-    row = series.tolist()
-    sender = row[0]
-    ids = row[1:][0].split(' ')
-    emails_ids_per_sender[sender] = ids
 
-# save all unique sender names
-all_senders = emails_ids_per_sender.keys()
 
-# create address book with frequency information for each user
-address_books = {}
-i = 0
+###################################################
+print "Building dictionnaries"
+all_users, all_senders,all_recs,address_books =init_dic(training,training_info)
 
-for sender, ids in emails_ids_per_sender.iteritems():
-    recs_temp = []
-    for my_id in ids:
-        recipients = training_info[training_info['mid']==int(my_id)]['recipients'].tolist()
-        recipients = recipients[0].split(' ')
-        # keep only legitimate email addresses
-        recipients = [rec for rec in recipients if '@' in rec]
-        recs_temp.append(recipients)
-    # flatten    
-    recs_temp = [elt for sublist in recs_temp for elt in sublist]
-    # compute recipient counts
-    rec_occ = dict(Counter(recs_temp))
-    # order by frequency
-    sorted_rec_occ = sorted(rec_occ.items(), key=operator.itemgetter(1), reverse = True)
-    # save
-    address_books[sender] = sorted_rec_occ
-    
-    if i % 10 == 0:
-        print i
-    i += 1
-  
-# save all unique recipient names    
-all_recs = list(set([elt[0] for sublist in address_books.values() for elt in sublist]))
-
-# save all unique user names 
-all_users = []
-all_users.extend(all_senders)
-all_users.extend(all_recs)
-all_users = list(set(all_users))
-
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 training_info_mat=training_info.as_matrix()
 content_train=training_info_mat[:,2]
@@ -89,7 +52,7 @@ bow_test=vec_test.toarray()
 #bow_train_normed=norm(bow_train.astype(np.float)# / norma[:,None],axis=1)
 
 
-def centroid(r,dataset,bow):
+def centroid(r,dataset_info,bow):
     info_recip_index=dataset[dataset['recipients'].str.contains(r)].index.tolist() #"rick.dietz@enron.com"
     bow_recip=bow[info_recip_index]  
     norma=norm(bow_recip, axis=1, ord=2) 
@@ -98,7 +61,7 @@ def centroid(r,dataset,bow):
 #centroid("rick.dietz@enron.com",training_info,bow_train)    
 
 #CREATE 1 tf_idf DATAFRAME FOR EACH SENDER
-def create_tfidf_df(u):   
+def create_tfidf_df(u,):   
     """Create Dataframe"""
     df_tfidf = pd.DataFrame(columns=('sender', 'recipient','tf_idf'))
     """Get email ids of that sender and select the dataset"""
@@ -113,7 +76,7 @@ def create_tfidf_df(u):
         i+=1  
     return df_tfidf
 
- """
+
  # LOOPING OVER THE SENDERS TO CREATE ALL THE DATAFRAMES AND SAVE IT TO CSV
 
 for sdr in all_senders:
