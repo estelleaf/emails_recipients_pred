@@ -93,13 +93,20 @@ def centroid(sender,dataset_info,bow):
     
 
     
-test=centroid(sender,training_info_S,bow_train)
-    
+centroid_S_df=centroid(sender,training_info_S,bow_train)
+
+centroid_S_arr=np.vstack(centroid_S_df['tf_idf'].as_matrix())
 
 #Similiarity
-cosine_similarities = linear_kernel(mail_test, v).flatten()
-similar_mails = [i for i in cosine_similarities.argsort()[::-1]]
+rec_pred_S=[]
+for k in range(bow_test.shape[0]):
+    mail_test=bow_test[k]
+    cosine_similarities = linear_kernel(mail_test, centroid_S_arr).flatten()
+    similar_centroids = [i for i in cosine_similarities.argsort()[::-1]]
+    rec_pred_S.append(centroid_S_df.ix[similar_centroids[:10]]['recipient'].tolist())
     
+
+                 
     
     
     
