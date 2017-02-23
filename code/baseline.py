@@ -116,7 +116,7 @@ with open(path_to_results + 'predictions_random.txt', 'wb') as my_file:
     for sender, preds in predictions_per_sender.iteritems():
         ids = preds[0]
         random_preds = preds[1]
-        for index, my_preds in enumerate(random_preds):
+        for (index, my_preds) in enumerate(random_preds):
             my_file.write(str(ids[index]) + ',' + ' '.join(my_preds) + '\n')
 
 with open(path_to_results + 'predictions_frequency.txt', 'wb') as my_file:

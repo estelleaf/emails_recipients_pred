@@ -87,6 +87,7 @@ def init_dic(training,training_info):
 
 
 def split(training,training_info):
+    
     emails_ids_per_sender = {}
     for index, series in training.iterrows():
         row = series.tolist()
@@ -119,6 +120,52 @@ def split(training,training_info):
         X_dev[sender]=np.array(X_dev[sender]).astype('int')
         
     return X_train, X_dev, Y_train,Y_dev
+    
+def csv_to_sub(training,training_info,test,test_info):
+    emails_ids_per_sender = {}
+    for index, series in training.iterrows():
+        row = series.tolist()
+        sender = row[0]
+        ids = row[1:][0].split(' ')
+        emails_ids_per_sender[sender] = ids
+    
+    recs = {}
+    for sender, ids in emails_ids_per_sender.iteritems():
+        recs_temp=[]
+        for my_id in ids:
+            recipients = training_info[training_info['mid']==int(my_id)]['recipients'].tolist()
+            recipients = recipients[0].split(' ')
+            # keep only legitimate email addresses
+            recipients = [rec for rec in recipients if '@' in rec]
+            recs_temp.append(recipients)
+        recs[sender]=recs_temp
+    
+    X_train={}
+    Y_train={}
+    for sender, ids in emails_ids_per_sender.iteritems():   
+        X_train[sender] = ids
+        Y_train[sender] = recs[sender]
+        X_train[sender]=np.array(X_train[sender]).astype('int')
+
+
+    emails_ids_per_sender = {}
+    for index, series in test.iterrows():
+        row = series.tolist()
+        sender = row[0]
+        ids = row[1:][0].split(' ')
+        emails_ids_per_sender[sender] = ids
+    
+    recs = {}
+    X_test={}
+
+    for sender, ids in emails_ids_per_sender.iteritems():   
+        X_test[sender]= ids
+        X_test[sender]=np.array(X_test[sender]).astype('int')
+    
+    
+   
         
+    return X_train,Y_train,X_test
+   
     
         

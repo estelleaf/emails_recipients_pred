@@ -11,6 +11,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from numpy.linalg import norm
 from sklearn.metrics.pairwise import linear_kernel
+from loss_function import score
 #from tfidf_centroid import centroid
 
 path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
@@ -42,7 +43,7 @@ all_users, all_senders,all_recs,address_books ,emails_ids_per_sender=init_dic(tr
 
 
 #Select a sender S
-index=1
+index=3
 sender=all_senders[index]
 X_train_S=X_train[sender]
 X_dev_S=X_dev[sender]
@@ -107,7 +108,8 @@ for k in range(bow_test.shape[0]):
     
 
                  
+sc_glob=0   
+for i in range(len(Y_dev_S)):
+    sc_glob+=score(Y_dev_S[i],rec_pred_S[i])
     
-    
-    
-
+final_score=float(sc_glob)/len(Y_dev_S)
