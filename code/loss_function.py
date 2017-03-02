@@ -12,7 +12,8 @@ import pandas as pd
 import operator
 from collections import Counter
 
-
+from paths import path
+path_to_code, path_to_data, path_to_results = path('estelle')
 
 def score_en_mode_numpy(y_true,y_pred):
     c = 0
@@ -64,15 +65,6 @@ def test_score_on_train(path_to_results, ground_truth, option='random'):
 
 
 
-
-path_to_data = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-#path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
-
-
-#path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
-#path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
 
 
 # petit copier coller de baseline.py pour créer le dico groun_truth
