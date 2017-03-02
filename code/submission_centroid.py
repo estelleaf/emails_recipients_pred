@@ -16,7 +16,7 @@ sys.path.append(path_to_code)
 
 
 import numpy as np
-from init import split, init_dic,csv_to_sub
+from init import split, init_dic, csv_to_sub
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from numpy.linalg import norm
