@@ -7,10 +7,15 @@ Created on Thu Feb 23 11:50:30 2017
 """
 
 # import sys pour ajouter le path_to_code pour que import init fonctionne
-path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
+from paths import path
 
-# path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/code'
+
+path_to_code, path_to_data, path_to_results = path('estelle')
+
+
+
+
+
 import sys
 
 sys.path.append(path_to_code)
@@ -26,9 +31,6 @@ from sklearn.metrics.pairwise import linear_kernel
 # from loss_function import score
 # from tfidf_centroid import centroid
 
-# path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
 
 ##########################
 # load some of the files #
@@ -128,24 +130,69 @@ for p in range(len(all_senders)):
 
     # compute K-nn for each message m in the test set
 
+<<<<<<< HEAD
 
+=======
+    def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
+        df_knn = pd.DataFrame(columns=('mid', 'recipients'))
+
+        for i, mid in enumerate(test_info_S['mid']):
+            #get K-nearest neighbors in term of cosine(tfidf)
+
+
+            cosine_similarities = cosine_similarity(bow_test[i][np.newaxis, :], bow_train).flatten()
+            temp = np.concatenate((training_info_S['recipients'].values[:, np.newaxis], cosine_similarities[:, np.newaxis]), axis=1)
+            temp = temp[temp[:, 1].argsort()[::-1].tolist()]
+            knn_liste = temp[:K]
+
+            # get all the recipients in the K-nns
+            all_recipients_in_Knn=[]
+            for j in range(K):
+                all_recipients_in_Knn.extend(knn_liste[:, 0][j].split(' '))
+
+
+            all_recipients_in_Knn = list(set(all_recipients_in_Knn))
+
+            # compute the score for each recipients
+            recipients_score = {}
+            for recipient in all_recipients_in_Knn:
+                idx = [ ind for ind in range(30) if recipient in knn_liste[ind, 0] ]
+                recipients_score[recipient] = np.sum(knn_liste[idx , 1])
+                #recipients_score[recipient] = np.sum(knn_liste[recipient in knn_liste[:,0]][:, 1])
+            sorted_recipients_by_score = sorted(recipients_score, key=recipients_score.get, reverse=True)[:10]
+
+            df_knn.loc[i] = [int(mid), sorted_recipients_by_score]
+
+        return df_knn
+>>>>>>> 114ee60af3c176fb2bc9e8f2640d8e390c2d79a5
 
 
     # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
     test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=K)
 
+<<<<<<< HEAD
     # Similiarity
     rec_pred_S = []
 
 
     predictions_per_sender[sender] = []
     for (mid, pred) in zip(X_test[sender], rec_pred_S):
+=======
+
+    # Similiarity
+    rec_pred_S = []
+    
+    
+    predictions_per_sender[sender] = []
+    for (mid, pred) in zip(test_knn['mid'],test_knn['recipients']):
+>>>>>>> 114ee60af3c176fb2bc9e8f2640d8e390c2d79a5
         predictions_per_sender[sender].append([mid, pred])
         # alternative
         # predictions_per_sender[sender].append(mid)
         # predictions_per_sender[sender].append([pred])
     print "Sender Number : " + str(p)
 
+<<<<<<< HEAD
 path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
 # path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
 # path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
@@ -167,3 +214,21 @@ if c != 2362:
 else:
     print 'everything went smoooothly (trust me, I do maths)'
 
+=======
+c=0 # compteur : a priori faut que ce soit 2362
+with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}.txt'.format(use_idf, max_df, min_df), 'wb') as my_file:
+    my_file.write('mid,recipients' + '\n')
+    for sender, preds_for_sender in predictions_per_sender.iteritems():
+
+        for (mid, pred) in  preds_for_sender:
+            c += 1
+            print 'mid',  mid
+            print 'pred', pred
+            my_file.write(str(mid) + ',' + ' '.join(pred) + '\n')
+
+
+if c !=2362:
+    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+else:
+    print 'everything went smoooothly (trust me, I do maths)'
+>>>>>>> 114ee60af3c176fb2bc9e8f2640d8e390c2d79a5
