@@ -102,17 +102,7 @@ for p in range(len(all_senders)):
             df_knn.loc[i] = [mid, knn_liste]
             i +=1
 
-        i = 0
-        for r in [elt[0] for elt in address_books[sender]]:
-            info_recip_index = dataset_info[
-                dataset_info['recipients'].str.contains(r)].index.tolist()  # "rick.dietz@enron.com"
-            bow_recip = bow[info_recip_index]
-            norma = norm(bow_recip, axis=1, ord=2)
-            bow_recip_normzd = bow_recip.astype(np.float) / (norma[:, None] + 10 ** (-7))
-            centroid_s_r = np.sum(bow_recip_normzd, axis=0)
-            df_tfidf.loc[i] = [r, centroid_s_r]
-            i += 1
-        return df_tfidf
+        return df_knn
 
     # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
     centroid_S_df = centroid(sender, training_info_S, bow_train)
@@ -289,7 +279,7 @@ path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/
 
 
 c = 0  # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}.txt'.format(use_idf), 'wb') as my_file:
+with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}.txt'.format(use_idf, max_df, min_df), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 

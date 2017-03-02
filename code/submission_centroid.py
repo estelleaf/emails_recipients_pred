@@ -55,8 +55,13 @@ predictions_per_sender={}
 
 
 # set the hyper-parameters like : use_id, etc...
-use_idf = False
+use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
+max_df = 0.8
+min_df = 0.05
+print 'To build the covabulary, the tfidfVectorizer witll use max_df={} and min_df={}'.format(max_df, min_df)
+
+
 
 for p in range(len(all_senders)):
     
@@ -72,7 +77,7 @@ for p in range(len(all_senders)):
     
     
     #vectorize mails sent by a unique sender
-    vectorizer_sender = TfidfVectorizer(max_df=0.95,stop_words='english',use_idf=use_idf)
+    vectorizer_sender = TfidfVectorizer(max_df=max_df, min_df=min_df, stop_words='english',use_idf=use_idf)
     
     #train
     training_info_S=training_info.loc[training_info['mid'].isin(X_train_S)]
@@ -107,7 +112,7 @@ for p in range(len(all_senders)):
             df_tfidf.loc[i]  = [r, centroid_s_r]
             i+=1
         return df_tfidf
-        
+
         
     
         
@@ -119,8 +124,8 @@ for p in range(len(all_senders)):
     rec_pred_S=[]
     for k in range(bow_test.shape[0]):
         mail_test=bow_test[k]
-        cosine_similarities = linear_kernel(mail_test, centroid_S_arr).flatten()
-        similar_centroids = [i for i in cosine_similarities.argsort()[::-1]]
+        cosine_similarities = linear_kernel(mail_test[np.newaxis, :], centroid_S_arr).flatten() #np.newaxis cause skl deprecation warning
+        similar_centroids = cosine_similarities.argsort()[::-1].tolist()
         rec_pred_S.append(centroid_S_df.ix[similar_centroids[:10]]['recipient'].tolist())
 
     predictions_per_sender[sender] = []
@@ -139,7 +144,7 @@ path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/
 
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_centroid_with_use_idf_set_to_{}.txt'.format(use_idf), 'wb') as my_file:
+with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}.txt'.format(use_idf, max_df, min_df), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
