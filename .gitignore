@@ -1,4 +1,7 @@
 # files that git will ignore
 
-*.idea
+
+**/*.idea
+
 *.DS_Store
+**/*.pyc

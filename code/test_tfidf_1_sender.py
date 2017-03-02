@@ -5,6 +5,14 @@ Created on Thu Feb 23 11:50:30 2017
 
 @author: estelleaflalo
 """
+
+# import sys pour ajouter le path_to_code pour que import init fonctionne
+path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
+# path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
+#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/code'
+import sys
+sys.path.append(path_to_code)
+
 import numpy as np
 from init import split, init_dic
 import pandas as pd
@@ -19,7 +27,7 @@ path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_a
 #path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
 
 ##########################
-# load some of the files #                           
+# load some of the files #
 ##########################
 
 

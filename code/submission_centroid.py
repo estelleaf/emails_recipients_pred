@@ -5,6 +5,16 @@ Created on Thu Feb 23 11:50:30 2017
 
 @author: estelleaflalo
 """
+
+# import sys pour ajouter le path_to_code pour que import init fonctionne
+path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
+
+# path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
+#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/code'
+import sys
+sys.path.append(path_to_code)
+
+
 import numpy as np
 from init import split, init_dic,csv_to_sub
 import pandas as pd
@@ -15,8 +25,13 @@ from sklearn.metrics.pairwise import linear_kernel
 #from tfidf_centroid import centroid
 
 #path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
+<<<<<<< HEAD
 #path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
 path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data/'
+=======
+path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
+>>>>>>> 531e2f14d351bacf3fe54e946217a4a5051ced52
 
 ##########################
 # load some of the files #                           
@@ -107,26 +122,36 @@ for p in range(len(all_senders)):
         cosine_similarities = linear_kernel(mail_test, centroid_S_arr).flatten()
         similar_centroids = [i for i in cosine_similarities.argsort()[::-1]]
         rec_pred_S.append(centroid_S_df.ix[similar_centroids[:10]]['recipient'].tolist())
-    
-    for (mid,pred) in zip(X_test[sender],rec_pred_S): 
-        predictions_per_sender[sender]=[mid,pred]
 
+    predictions_per_sender[sender] = []
+    for (mid, pred) in zip(X_test[sender], rec_pred_S):
+        predictions_per_sender[sender].append([mid, pred])
+        # alternative
+        # predictions_per_sender[sender].append(mid)
+        # predictions_per_sender[sender].append([pred])
     print "Sender Number : " + str(p)
         
     
 
-#path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
+path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
+#path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
 #path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
 
 
-
+c=0 # compteur : a priori faut que ce soit 2362
 with open(path_to_results + 'predictions_centroid.txt', 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
-    for sender, preds in predictions_per_sender.iteritems():
-        ids = preds[0]
-        random_preds = preds[1]
-        print random_preds
-        print ids     
-        for (index, my_preds) in enumerate(random_preds):
-            my_file.write(str(ids) + ',' + ' '.join(my_preds) + '\n')
+    for sender, preds_for_sender in predictions_per_sender.iteritems():
+
+        for (mid, pred) in  preds_for_sender:
+            c += 1
+            print 'mid',  mid
+            print 'pred', pred
+            my_file.write(str(mid) + ',' + ' '.join(pred) + '\n')
+
+
+if c !=2362:
+    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+else:
+    print 'everything went smoooothly (trust me, I do maths)'
+
