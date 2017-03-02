@@ -26,9 +26,10 @@ from sklearn.metrics.pairwise import linear_kernel
 # from loss_function import score
 # from tfidf_centroid import centroid
 
-# path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
+
+path_to_code, path_to_data, path_to_results = path('estelle')
+
+
 
 ##########################
 # load some of the files #
@@ -145,10 +146,6 @@ for p in range(len(all_senders)):
         # predictions_per_sender[sender].append([pred])
     print "Sender Number : " + str(p)
 
-path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-# path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
-# path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
-
 
 c = 0  # compteur : a priori faut que ce soit 2362
 with open(path_to_results + 'predictions_centroid_with_use_idf_set_to_{}.txt'.format(use_idf), 'wb') as my_file:
@@ -174,11 +171,7 @@ Created on Thu Feb 23 11:50:30 2017
 @author: estelleaflalo
 """
 
-# import sys pour ajouter le path_to_code pour que import init fonctionne
-path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
 
-# path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/code'
 import sys
 
 sys.path.append(path_to_code)
@@ -193,9 +186,6 @@ from sklearn.metrics.pairwise import linear_kernel
 # from loss_function import score
 # from tfidf_centroid import centroid
 
-# path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-# path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
 
 ##########################
 # load some of the files #
@@ -292,10 +282,6 @@ for p in range(len(all_senders)):
         # predictions_per_sender[sender].append(mid)
         # predictions_per_sender[sender].append([pred])
     print "Sender Number : " + str(p)
-
-path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-# path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
-# path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
 
 
 c = 0  # compteur : a priori faut que ce soit 2362
