@@ -53,6 +53,11 @@ X_train,Y_train,X_test=csv_to_sub(training,training_info,test,test_info)
 
 predictions_per_sender={}
 
+
+# set the hyper-parameters like : use_id, etc...
+use_idf = False
+print 'Parameter use_idf is set to {}'.format(use_idf)
+
 for p in range(len(all_senders)):
     
     #Select a sender S
@@ -67,7 +72,7 @@ for p in range(len(all_senders)):
     
     
     #vectorize mails sent by a unique sender
-    vectorizer_sender = TfidfVectorizer(max_df=0.95,stop_words='english',use_idf=True)
+    vectorizer_sender = TfidfVectorizer(max_df=0.95,stop_words='english',use_idf=use_idf)
     
     #train
     training_info_S=training_info.loc[training_info['mid'].isin(X_train_S)]
@@ -134,7 +139,7 @@ path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/
 
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_centroid.txt', 'wb') as my_file:
+with open(path_to_results + 'predictions_centroid_with_use_idf_set_to_{}.txt'.format(use_idf), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
