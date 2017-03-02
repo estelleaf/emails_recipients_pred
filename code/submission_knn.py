@@ -19,6 +19,7 @@ import numpy as np
 from init import split, init_dic, csv_to_sub
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from numpy.linalg import norm
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -90,17 +91,16 @@ for p in range(len(all_senders)):
     vec_test = vectorizer_sender.transform(content_test)
     bow_test = vec_test.toarray()
 
+    # compute K-nn for each message m in the test set
 
-    # Creation of centroids for each recipient
-    def Knn(sender, mail, dataset_info, bow, K=30):
+    def Knn(sender, bow_train, bow_test, test_info_S, K=30):
         df_knn = pd.DataFrame(columns=('mid', 'knn'))
         i=0
-        for (mid, mail_content) in zip(dataset_info['mid'], dataset_info['body']):
-            for (mid, mail_content) in
-
-
+        for (mid, mail_content) in zip(test_info_S['mid'], test_info_S['body']):
+            cosine_similarities =  cosine_similarity(bow_test[i][np.newaxis, :], bow_train)
+            knn_liste = cosine_similarities.argsort()[::-1][:K].astype('double').tolist()
             df_knn.loc[i] = [mid, knn_liste]
-
+            i +=1
 
         i = 0
         for r in [elt[0] for elt in address_books[sender]]:
