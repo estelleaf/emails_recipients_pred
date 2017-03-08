@@ -87,11 +87,8 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-<<<<<<< HEAD
-K=20
-=======
 K=40
->>>>>>> 5bfd0cea773a993a4b3758c66a5673b37adeb1f4
+
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
@@ -133,39 +130,6 @@ for p in range(len(all_senders)):
     bow_test = vec_test.toarray()
 
     # compute K-nn for each message m in the test set
-
-
-    def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
-        df_knn = pd.DataFrame(columns=('mid', 'recipients'))
-
-        for i, mid in enumerate(test_info_S['mid']):
-            #get K-nearest neighbors in term of cosine(tfidf)
-
-
-            cosine_similarities = cosine_similarity(bow_test[i][np.newaxis, :], bow_train).flatten()
-            temp = np.concatenate((training_info_S['recipients'].values[:, np.newaxis], cosine_similarities[:, np.newaxis]), axis=1)
-            temp = temp[temp[:, 1].argsort()[::-1].tolist()]
-            knn_liste = temp[:K]
-
-            # get all the recipients in the K-nns
-            all_recipients_in_Knn=[]
-            for j in range(K):
-                all_recipients_in_Knn.extend(knn_liste[:, 0][j].split(' '))
-
-
-            all_recipients_in_Knn = list(set(all_recipients_in_Knn))
-
-            # compute the score for each recipients
-            recipients_score = {}
-            for recipient in all_recipients_in_Knn:
-                idx = [ ind for ind in range(K) if recipient in knn_liste[ind, 0] ]
-                recipients_score[recipient] = np.sum(knn_liste[idx , 1])
-                #recipients_score[recipient] = np.sum(knn_liste[recipient in knn_liste[:,0]][:, 1])
-            sorted_recipients_by_score = sorted(recipients_score, key=recipients_score.get, reverse=True)[:10]
-
-            df_knn.loc[i] = [int(mid), sorted_recipients_by_score]
-
-        return df_knn
 
 
     # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
