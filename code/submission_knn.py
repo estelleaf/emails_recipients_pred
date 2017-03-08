@@ -86,7 +86,7 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=30
+K=40
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
