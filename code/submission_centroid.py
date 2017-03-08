@@ -21,6 +21,17 @@ from sklearn.metrics.pairwise import linear_kernel
 #from loss_function import score
 #from tfidf_centroid import centroid
 
+<<<<<<< HEAD
+#path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
+<<<<<<< HEAD
+#path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data/'
+=======
+path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
+>>>>>>> 531e2f14d351bacf3fe54e946217a4a5051ced52
+=======
+>>>>>>> 612db6133429ecd7ab3201517e5792515c0a043e
 
 ##########################
 # load some of the files #                           

@@ -28,3 +28,5 @@ def path(user):
         path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
 
     return path_to_code, path_to_data, path_to_results
+
+
