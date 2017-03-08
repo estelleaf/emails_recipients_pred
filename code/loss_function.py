@@ -43,15 +43,15 @@ def score(y_true,y_pred):
     return sum(temp)/min(n_true,10)
 
 
-def test_score_on_train(path_to_results, ground_truth, option='random'):
+def test_score_on_train(path_to_results, ground_truth, txt='random'):
     """ option = 'random' ou  'frequency' """
 
-    if option == 'random':
+    if txt == 'random':
         pred = pd.read_csv(path_to_results + 'train_predictions_random.txt', sep=',', header=0)
-    elif option == 'frequency':
+    elif txt == 'frequency':
         pred = pd.read_csv(path_to_results + 'train_predictions_frequency.txt', sep=',', header=0)
     else:
-        raise ValueError('wrong option typ, should be random or frequency ')
+        pred = pd.read_csv(path_to_results + txt, sep=',', header=0)
 
 
     number_of_mail = len(ground_truth.keys())
