@@ -556,6 +556,7 @@ mid,recipients
 255202,no.address@enron.com john.postlethwaite@enron.com stacey.w.white@enron.com casey.evans@enron.com wayne.vinson@enron.com hai.chen@enron.com norman.lee@enron.com zhiyun.yang@enron.com sally.beck@enron.com john.lavorato@enron.com
 255211,john.postlethwaite@enron.com no.address@enron.com casey.evans@enron.com stacey.w.white@enron.com wayne.vinson@enron.com norman.lee@enron.com zhiyun.yang@enron.com leslie.reeves@enron.com tim.belden@enron.com wanda.curry@enron.com
 255213,no.address@enron.com stacey.w.white@enron.com john.postlethwaite@enron.com casey.evans@enron.com wayne.vinson@enron.com hai.chen@enron.com norman.lee@enron.com zhiyun.yang@enron.com debra.bailey@enron.com a..allen@enron.com
+<<<<<<< HEAD
 255227,casey.evans@enron.com john.postlethwaite@enron.com sally.beck@enron.com paul.lewis@enron.com tim.belden@enron.com wayne.vinson@enron.com samantha.law@enron.com andrea.dahlke@enron.com john.lavorato@enron.com steve.nat@enron.com
 255231,no.address@enron.com john.postlethwaite@enron.com stacey.w.white@enron.com casey.evans@enron.com wayne.vinson@enron.com hai.chen@enron.com norman.lee@enron.com zhiyun.yang@enron.com debra.bailey@enron.com andrea.dahlke@enron.com
 255736,no.address@enron.com stacey.w.white@enron.com john.postlethwaite@enron.com casey.evans@enron.com wayne.vinson@enron.com hai.chen@enron.com norman.lee@enron.com zhiyun.yang@enron.com debra.bailey@enron.com a..allen@enron.com
@@ -2361,3 +2362,6 @@ mid,recipients
 394198,jarnold@enron.com taylor@enron.com kimberly.watson@enron.com steven.j.kean@enron.com richard.shapiro@enron.com rick.buy@enron.com
 394230,steven.j.kean@enron.com fsturm@enron.com rick.buy@enron.com shelley.corman@enron.com richard.shapiro@enron.com kimberly.watson@enron.com mark.whitt@enron.com whalley@enron.com taylor@enron.com kevin.hyatt@enron.com
 394431,steven.j.kean@enron.com shelley.corman@enron.com rick.buy@enron.com richard.shapiro@enron.com kimberly.watson@enron.com mark.whitt@enron.com whalley@enron.com fsturm@enron.com taylor@enron.com kevin.hyatt@enron.com
+=======
+255227,casey.evans@enron.com john.postlethwaite@enron.com sally.beck@enron.com paul.lewis@enron.com tim.belden@enron.com wayne.vins
+>>>>>>> 048bdd1143e718e3d677ff6806e391195f3d89f6

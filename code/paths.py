@@ -20,7 +20,9 @@ def path(user):
         path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
     
     if user=="victor":
-        pass
+        path_to_code = 'C:/Users/Victor/Documents/MVA/ALTEGRAD/Kaggle/text_and_graph/code/'
+        path_to_data = 'C:/Users/Victor/Documents/MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
+        path_to_results = 'C:/Users/Victor/Documents/MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
     
     if user=="estelle":
         path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"

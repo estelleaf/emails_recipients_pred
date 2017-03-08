@@ -14,7 +14,7 @@ import sys
 sys.path.append(path_to_code)
 
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
-path_to_code, path_to_data, path_to_results = path("nicolas")
+path_to_code, path_to_data, path_to_results = path("victor")
 
 
 
