@@ -7,16 +7,13 @@ Created on Thu Feb 23 11:50:30 2017
 """
 
 # import sys pour ajouter le path_to_code pour que import init fonctionne
-path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
 
-# path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
-#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/code'
 import sys
-sys.path.append(path_to_code)
 
 
+from paths import path
 import numpy as np
-from init import split, init_dic,csv_to_sub
+from init import split, init_dic, csv_to_sub
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from numpy.linalg import norm
@@ -24,6 +21,7 @@ from sklearn.metrics.pairwise import linear_kernel
 #from loss_function import score
 #from tfidf_centroid import centroid
 
+<<<<<<< HEAD
 #path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
 <<<<<<< HEAD
 #path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
@@ -32,11 +30,23 @@ path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Gr
 path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
 #path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
 >>>>>>> 531e2f14d351bacf3fe54e946217a4a5051ced52
+=======
+>>>>>>> 612db6133429ecd7ab3201517e5792515c0a043e
 
 ##########################
 # load some of the files #                           
 ##########################
 
+
+
+
+
+path_to_code, path_to_data, path_to_results = path('estelle')
+
+
+
+
+sys.path.append(path_to_code)
 
 
 
@@ -58,6 +68,16 @@ X_train,Y_train,X_test=csv_to_sub(training,training_info,test,test_info)
 
 predictions_per_sender={}
 
+
+# set the hyper-parameters like : use_id, etc...
+use_idf = True
+print 'Parameter use_idf is set to {}'.format(use_idf)
+max_df = 0.8
+min_df = 0.05
+print 'To build the covabulary, the tfidfVectorizer witll use max_df={} and min_df={}'.format(max_df, min_df)
+
+
+
 for p in range(len(all_senders)):
     
     #Select a sender S
@@ -72,7 +92,7 @@ for p in range(len(all_senders)):
     
     
     #vectorize mails sent by a unique sender
-    vectorizer_sender = TfidfVectorizer(max_df=0.95,stop_words='english',use_idf=True)
+    vectorizer_sender = TfidfVectorizer(max_df=max_df, min_df=min_df, stop_words='english',use_idf=use_idf)
     
     #train
     training_info_S=training_info.loc[training_info['mid'].isin(X_train_S)]
@@ -107,7 +127,7 @@ for p in range(len(all_senders)):
             df_tfidf.loc[i]  = [r, centroid_s_r]
             i+=1
         return df_tfidf
-        
+
         
     
         
@@ -119,8 +139,8 @@ for p in range(len(all_senders)):
     rec_pred_S=[]
     for k in range(bow_test.shape[0]):
         mail_test=bow_test[k]
-        cosine_similarities = linear_kernel(mail_test, centroid_S_arr).flatten()
-        similar_centroids = [i for i in cosine_similarities.argsort()[::-1]]
+        cosine_similarities = linear_kernel(mail_test[np.newaxis, :], centroid_S_arr).flatten() #np.newaxis cause skl deprecation warning
+        similar_centroids = cosine_similarities.argsort()[::-1].tolist()
         rec_pred_S.append(centroid_S_df.ix[similar_centroids[:10]]['recipient'].tolist())
 
     predictions_per_sender[sender] = []
@@ -133,13 +153,9 @@ for p in range(len(all_senders)):
         
     
 
-path_to_results = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Predictions/'
-#path_to_results= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Predictions/"
-#path_to_results = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Predictions/'
-
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_centroid.txt', 'wb') as my_file:
+with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}.txt'.format(use_idf, max_df, min_df), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 

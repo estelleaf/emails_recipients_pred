@@ -19,28 +19,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 
-
-#path_to_data= "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/Data/"
-#path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data/'
-
-#path_to_data = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/Data/'
-#path_to_data = '/Users/domitillecoulomb/Documents/DATA_SCIENCE/Semester2/Text_Graph/text_and_graph/Data'
-
 ##########################
 # load some of the files #                           
 ##########################
 
 
 
-
-training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
-
-training_info = pd.read_csv(path_to_data + 'training_info.csv', sep=',', header=0)
-
-test = pd.read_csv(path_to_data + 'test_set.csv', sep=',', header=0)
-
-test_info= pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 
 def init_dic(training,training_info):
     emails_ids_per_sender = {}
