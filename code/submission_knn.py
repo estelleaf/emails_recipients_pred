@@ -6,15 +6,12 @@ Created on Thu Feb 23 11:50:30 2017
 @author: estelleaflalo
 """
 
-# import sys pour ajouter le path_to_code pour que import init fonctionne
-path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
-#path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
 
 import sys
 sys.path.append(path_to_code)
 
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
-path_to_code, path_to_data, path_to_results = path("nicolas")
+path_to_code, path_to_data, path_to_results = path("estelle")
 
 
 
@@ -86,7 +83,7 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=30
+K=20
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
