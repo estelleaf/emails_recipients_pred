@@ -122,7 +122,7 @@ for p in range(len(all_senders)):
             # compute the score for each recipients
             recipients_score = {}
             for recipient in all_recipients_in_Knn:
-                idx = [ ind for ind in range(30) if recipient in knn_liste[ind, 0] ]
+                idx = [ ind for ind in range(K) if recipient in knn_liste[ind, 0] ]
                 recipients_score[recipient] = np.sum(knn_liste[idx , 1])
                 #recipients_score[recipient] = np.sum(knn_liste[recipient in knn_liste[:,0]][:, 1])
             sorted_recipients_by_score = sorted(recipients_score, key=recipients_score.get, reverse=True)[:10]
@@ -133,7 +133,7 @@ for p in range(len(all_senders)):
 
 
     # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
-    test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=K)
+    test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=20)
 
 
     # Similiarity
@@ -149,7 +149,7 @@ for p in range(len(all_senders)):
     print "Sender Number : " + str(p)
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}.txt'.format(use_idf, max_df, min_df), 'wb') as my_file:
+with open(path_to_results + 'predictions_knn_with_use_idf_knn20.txt', 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
