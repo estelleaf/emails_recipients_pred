@@ -73,7 +73,7 @@ def init_dic(training,training_info):
     return all_users, all_senders,all_recs,address_books ,emails_ids_per_sender
 
 
-def split(training,training_info):
+def split(training,training_info,seed):
     
     emails_ids_per_sender = {}
     for index, series in training.iterrows():
@@ -102,7 +102,7 @@ def split(training,training_info):
     for sender, ids in emails_ids_per_sender.iteritems():   
         X = ids
         Y = recs[sender]
-        X_train[sender], X_dev[sender], Y_train[sender], Y_dev[sender] = train_test_split(X, Y, test_size=0.2, random_state=42)
+        X_train[sender], X_dev[sender], Y_train[sender], Y_dev[sender] = train_test_split(X, Y, test_size=20./len(X), random_state=seed)
         X_train[sender]=np.array(X_train[sender]).astype('int')
         X_dev[sender]=np.array(X_dev[sender]).astype('int')
         

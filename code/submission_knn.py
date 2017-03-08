@@ -11,7 +11,11 @@ import sys
 sys.path.append(path_to_code)
 
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
+
 path_to_code, path_to_data, path_to_results = path("estelle")
+
+#path_to_code, path_to_data, path_to_results = path("victor")
+
 
 
 
@@ -83,13 +87,17 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
+<<<<<<< HEAD
 K=20
+=======
+K=40
+>>>>>>> 5bfd0cea773a993a4b3758c66a5673b37adeb1f4
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
 print 'To build the vocabulary, the tfidfVectorizer will use max_df={} and min_df={}'.format(max_df, min_df)
 sublinear_tf  = True # default is False in sklearn
-if not sublinear_tf:
+if sublinear_tf:
     print 'The tf is replaced by (1 + log(tf))'
 
 for p in range(len(all_senders)):
