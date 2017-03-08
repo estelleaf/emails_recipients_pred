@@ -92,7 +92,7 @@ max_df = 0.95
 min_df = 1
 print 'To build the vocabulary, the tfidfVectorizer will use max_df={} and min_df={}'.format(max_df, min_df)
 sublinear_tf  = True # default is False in sklearn
-if not sublinear_tf:
+if sublinear_tf:
     print 'The tf is replaced by (1 + log(tf))'
 
 for p in range(len(all_senders)):
