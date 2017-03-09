@@ -1,26 +1,13 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb 23 11:50:30 2017
+Created on Wed Mar  8 14:43:20 2017
 
-@author: estelleaflalo
+@author: domitillecoulomb
 """
 
-
-import sys
-sys.path.append(path_to_code)
-
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
-
-
-path_to_code, path_to_data, path_to_results = path("estelle")
-
-
-#path_to_code, path_to_data, path_to_results = path("nicolas")
-#path_to_code, path_to_data, path_to_results = path("domitille")
-
-#path_to_code, path_to_data, path_to_results = path("victor")
-
+path_to_code, path_to_data, path_to_results = path("domitille")
 
 
 import numpy as np
@@ -35,9 +22,6 @@ from sklearn.metrics.pairwise import linear_kernel
 # from tfidf_centroid import centroid
 
 
-##########################
-# load some of the files #
-##########################
 def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
     df_knn = pd.DataFrame(columns=('mid', 'recipients'))
 
@@ -70,6 +54,23 @@ def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
 
     return df_knn
 
+def centroid(sender,dataset_info,bow):
+    df_tfidf = pd.DataFrame(columns=('recipient','tf_idf'))
+    i=0
+    for r in [elt[0] for elt in address_books[sender]]:
+        info_recip_index=dataset_info[dataset_info['recipients'].str.contains(r)].index.tolist() #"rick.dietz@enron.com"
+        bow_recip=bow[info_recip_index]  
+        norma=norm(bow_recip, axis=1, ord=2) 
+        bow_recip_normzd=bow_recip.astype(np.float) / (norma[:,None]+10**(-7))
+        centroid_s_r= np.sum(bow_recip_normzd,axis=0) 
+        df_tfidf.loc[i]  = [r, centroid_s_r]
+        i+=1
+    return df_tfidf
+
+
+##########################
+# load some of the files #
+##########################
 
 
 training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
@@ -91,21 +92,19 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=40
-
+K=30
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
 print 'To build the vocabulary, the tfidfVectorizer will use max_df={} and min_df={}'.format(max_df, min_df)
 sublinear_tf  = True # default is False in sklearn
-if sublinear_tf:
+if not sublinear_tf:
     print 'The tf is replaced by (1 + log(tf))'
 
-for p in range(len(all_senders)):
+
+for sender in senders_knn:
 
     # Select a sender S
-    index = p
-    sender = all_senders[index]
     X_train_S = X_train[sender]
     X_dev_S = X_test[sender]
     Y_train_S = Y_train[sender]
@@ -135,25 +134,32 @@ for p in range(len(all_senders)):
 
     # compute K-nn for each message m in the test set
 
-
-    # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
-
     test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=K)
     test_knn['mid'] = test_knn['mid'].astype(int)
-
 
     # add a entry corresponding to the sendr in the dictionnary
     predictions_per_sender[sender] = []
     for (mid, pred) in zip(test_knn['mid'].values,test_knn['recipients'].values):
         predictions_per_sender[sender].append([mid, pred])
 
-    print "Sender Number : " + str(p)
+    print "Sender Name : " + str(sender)
+
+
+for sender in senders_frequency:
+
+    # Select a sender S
+    X_train_S = X_train[sender]
+    X_dev_S = X_test[sender]
+    Y_train_S = Y_train[sender]
+
+    predictions_per_sender[sender]=[]
+    k_most = [elt[0] for elt in address_books[sender][:10]]
+    for mid in X_dev_S:
+        predictions_per_sender[sender].append([mid,k_most])
 
 
 c=0 # compteur : a priori faut que ce soit 2362
-
-with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
-
+with open(path_to_results + 'predictions_mix_knn_frequency_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
