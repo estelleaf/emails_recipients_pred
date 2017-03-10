@@ -10,17 +10,17 @@ Created on Thu Feb 23 11:50:30 2017
 import sys
 
 
+#path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
+#sys.path.append(path_to_code)
+
+
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
 
-
-path_to_code, path_to_data, path_to_results = path("estelle")
-
-
-#path_to_code, path_to_data, path_to_results = path("nicolas")
+path_to_code, path_to_data, path_to_results = path("nicolas")
 #path_to_code, path_to_data, path_to_results = path("domitille")
-
 #path_to_code, path_to_data, path_to_results = path("victor")
 sys.path.append(path_to_code)
+
 
 
 import numpy as np
@@ -92,7 +92,13 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
+<<<<<<< HEAD
 K=20
+=======
+
+K=20
+
+>>>>>>> 14eb99a3afdab4d7d68c0ef82fbdedcd86edb23c
 
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
