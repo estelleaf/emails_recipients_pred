@@ -132,8 +132,15 @@ if __name__ == '__main__':
     print "Building dictionnaries"
 
     _, all_senders, _, address_books, _ = init_dic(training, training_info)
+    X_train, X_dev, Y_train, Y_dev = split(training, training_info, 42)
+    #X_train2, Y_train2, X_test = csv_to_sub(training, training_info, test, test_info)
 
-    X_train, Y_train, X_test = csv_to_sub(training, training_info, test, test_info)
+    new_index_train = []
+    for array in X_train.values():
+        new_index_train.extend(array.tolist())
+
+    train_info = training_info.loc[training_info['mid'].isin(new_index_train)]
+
 
 
     # set the hyper-parameters like : use_id, etc...
@@ -157,8 +164,10 @@ if __name__ == '__main__':
         index = p
         sender = all_senders[index]
         X_train_S = X_train[sender]
-        X_dev_S = X_test[sender]
+        X_dev_S = X_dev[sender]
         Y_train_S = Y_train[sender]
+
+
 
 
         vectorizer_sender = TfidfVectorizer(max_df=max_df, min_df = min_df, stop_words='english', use_idf=use_idf,
