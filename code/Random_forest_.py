@@ -61,25 +61,22 @@ class Random_forest_predictor:
 
         #sanity check : if n_recipient is <10 from the begining (e.g. p=37 has only one correspondant)
         if n_class < 10:
+            # we can't tke the 10 bets cause there are less than 10 recs
             if n_class == 1:
                 print n_class
-                predictions_per_sender_RF[sender] = []
+                predictions_per_sender_RF[self.sender] = []
                 ind = np.argsort(y_test, axis=1)[:, -1][:, None]
                 print ind
                 for i, mid in enumerate(test_info_S['mid'].astype(int)):
-                    predictions_per_sender_RF[sender].append([mid, [all_recs_S[j] for j in ind[i, :]]])
+                    predictions_per_sender_RF[self.sender].append([ mid, [ all_recs_S[j] for j in ind[i, :] ]])
             else:
-                print n_class
-                predictions_per_sender_RF[sender] = []
-                ind = np.argsort(y_test, axis=1)[:, -n_class:].reshape((n_test, n_class))
+                predictions_per_sender_RF[self.sender] = []
+                ind = np.argsort(y_test, axis=1)[:, n_class + 1:].reshape((n_test, n_class))
                 for i, mid in enumerate(test_info_S['mid'].astype(int)):
-                    predictions_per_sender_RF[sender].append([mid, [all_recs_S[j] for j in ind[i, :]]])
+                    predictions_per_sender_RF[self.sender].append([mid, [all_recs_S[j] for j in ind[i, :]]])
         else:
+            #do the normal way, take te 10 best
             ind = np.argsort(y_test, axis=1)[:, -10:]
-
-            predictions_per_sender_RF[sender] = []
-            for i, mid in enumerate(test_info_S['mid'].astype(int)):
-                predictions_per_sender_RF[sender].append([mid, [all_recs_S[j] for j in ind[i, :]]])
 
             predictions_per_sender_RF[self.sender] = []
             for i, mid in enumerate(test_info_S['mid'].astype(int)):
