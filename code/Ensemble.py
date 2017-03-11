@@ -34,7 +34,7 @@ test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 print "Building dictionnaries"
 
 _, all_senders, _, address_books, _ = init_dic(training, training_info)
-X_train, X_dev, Y_train, Y_dev = split(training, training_info, 42)
+X_train, X_dev, Y_train, Y_dev = split(training, training_info, 1)
 #X_train2, Y_train2, X_test = csv_to_sub(training, training_info, test, test_info)
 
 new_index_train = []
@@ -149,6 +149,8 @@ for sender in score_per_sender_knn.keys():
     else:
         senders_knn.append(sender)
 
+for sen in senders_RF:
+    print sen, ' : ', score_per_sender_RF[sen]
 
 
 

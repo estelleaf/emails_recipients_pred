@@ -74,7 +74,7 @@ class Random_forest_predictor:
                     predictions_per_sender_RF[self.sender].append([ mid, [ all_recs_S[j] for j in ind[i, :] ]])
             else:
                 predictions_per_sender_RF[self.sender] = []
-                ind = np.argsort(y_test, axis=1)[:, n_class:].reshape((n_test, n_class))
+                ind = np.argsort(y_test, axis=1)[:, -n_class:].reshape((n_test, n_class))
                 for i, mid in enumerate(test_info_S['mid'].astype(int)):
                     predictions_per_sender_RF[self.sender].append([mid, [all_recs_S[j] for j in ind[i, :]]])
         else:
