@@ -30,15 +30,18 @@ class Random_forest_predictor:
     def fit_predict_build_pred_dictionnary(self, training_info_S, content_train, test_info_S, bow_train, bow_test,
                                            n_estimators, max_depth, n_jobs, predictions_per_sender_RF ):
         """
-        Method 'all in one' that fit predict and append the prediction dico
+        Method 'tout en un', on fit on predit et on créé un nouvelle entrée dans le dico prediction_per_sender_RF
         :param training_info_S:
         :param content_train:
+        :param test_info_S:
         :param bow_train:
         :param bow_test:
-        :param n_estimators: param
+        :param n_estimators:
         :param max_depth:
         :param n_jobs:
-        :return:
+        :param predictions_per_sender_RF:
+
+        :return: Nothing, the dict is modified inside the method
         """
         all_recs_S = get_all_recs_per_sender(training_info_S)
         n_class = len(all_recs_S)

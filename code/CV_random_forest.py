@@ -16,7 +16,7 @@ path_to_code, path_to_data, path_to_results = path("nicolas")
 import numpy as np
 from init import split, init_dic, csv_to_sub
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from numpy.linalg import norm
 from loss_function import score,score_en_mode_numpy
@@ -48,7 +48,7 @@ def get_all_recs_per_sender(train_info_S):
     return all_recs
 
 
-n_estimators=1000
+n_estimators=100
 max_depth = 100
 max_features='log2'
 
@@ -67,6 +67,7 @@ for p in range(len(all_senders)):
 
     # vectorize mails sent by a unique sender
     vectorizer_sender = CountVectorizer(stop_words='english')
+    vectorizer_sender  = TfidfVectorizer(stop_words='english', sublinear_tf=True)
 
     # /!\ en ross_val on ne travaille pas avec le test_info.csv, mais on split le train info
     # train

@@ -22,6 +22,7 @@ from numpy.linalg import norm
 from loss_function import score
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from knn import knn_predictor
+from Random_forest import Random_forest_predictor
 
 training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
 

@@ -13,199 +13,145 @@ sys.path.append(path_to_code)
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
 path_to_code, path_to_data, path_to_results = path("nicolas")
 
-
-
 import numpy as np
+from init import split, init_dic, csv_to_sub
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from numpy.linalg import norm
+from loss_function import score
+from knn import knn_predictor
+from Random_forest import Random_forest_predictor
+
+training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
+
+training_info = pd.read_csv(path_to_data + 'training_info.csv', sep=',', header=0)
+
+test = pd.read_csv(path_to_data + 'test_set.csv', sep=',', header=0)
+
+test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
+
+print "Building dictionnaries"
+
+_, all_senders, _, address_books, _ = init_dic(training, training_info)
+X_train, X_dev, Y_train, Y_dev = split(training, training_info, 42)
+#X_train2, Y_train2, X_test = csv_to_sub(training, training_info, test, test_info)
+
+new_index_train = []
+for array in X_train.values():
+    new_index_train.extend(array.tolist())
+
+train_info = training_info.loc[training_info['mid'].isin(new_index_train)]
 
 
 
-def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
-    df_knn = pd.DataFrame(columns=('mid', 'recipients'))
+# set the hyper-parameters like : use_id, etc...
+use_idf = True
+print 'Parameter use_idf is set to {}'.format(use_idf)
+K = 30
+print 'parameter K is set to {}'.format(K)
+max_df = 0.95
+min_df = 1
+print 'To build the vocabulary, the tfidfVectorizer will use max_df={} and min_df={}'.format(max_df, min_df)
+sublinear_tf = True  # default is False in sklearn
+if sublinear_tf:
+    print 'The tf is replaced by (1 + log(tf))'
 
-    for i, mid in enumerate(test_info_S['mid']):
-        # get K-nearest neighbors in term of cosine(tfidf)
 
-        cosine_similarities = cosine_similarity(bow_test[i][np.newaxis, :], bow_train).flatten()
-        temp = np.concatenate((training_info_S['recipients'].values[:, np.newaxis], cosine_similarities[:, np.newaxis]),
-                              axis=1)
-        temp = temp[temp[:, 1].argsort()[::-1].tolist()]
-        knn_liste = temp[:K]
+# Parametre de la random forest
 
-        # get all the recipients in the K-nns
-        all_recipients_in_Knn = []
-        for j in range(K):
-            all_recipients_in_Knn.extend(knn_liste[:, 0][j].split(' '))
-
-        all_recipients_in_Knn = list(set(all_recipients_in_Knn))
-
-        # compute the score for each recipients
-        recipients_score = {}
-        for recipient in all_recipients_in_Knn:
-            idx = [ind for ind in range(K) if recipient in knn_liste[ind, 0]]
-            recipients_score[recipient] = np.sum(knn_liste[idx, 1])
-            # recipients_score[recipient] = np.sum(knn_liste[recipient in knn_liste[:,0]][:, 1])
-        sorted_recipients_by_score = sorted(recipients_score, key=recipients_score.get, reverse=True)[:10]
-
-        df_knn.loc[i] = [int(mid), sorted_recipients_by_score]
-
-    return df_knn
+n_estimators, max_depth, n_jobs = 100, 100, -2 #mettez pas -1 ou alors faites rien pendant
 
 
 
-
-class knn_predictor():
-    """ A class with a scikit -like API .fit() et .predict() method
-
-    """
-    def __init__(self, sender):
-        self.sender = sender
-
-    def fit_predict(self, bow_train, bow_test, training_info_S, test_info_S,  K=30):
-        """
-        Calculate for each dev message, it's K-nns in the train. Then compute similarity score for each user involved in the K-nns
-         and take the 10 first user with the best score. A lot of the work is done in the function Knn().
-        :param X_train_S:
-        :param X_dev_S:
-        :param training_info:
-        :param test_info:
-        :param K:
-        :param use_idf:
-        :param sublinear_tf:
-        :return:
-        """
-        # compute K-nn for each message m in the test set
-
-        test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=K)
-        test_knn['mid'] = test_knn['mid'].astype(int) # convert the mid column into int type for submission
-
-        return test_knn
-
-    def build_prediction_dictionnary(self, predictions_per_sender, test_knn):
-        """
-        Take the dictionnary of the prediction and fill it with the new prediction in the right way for the submission function
-        :param predictions_per_sender: a dictionnary that will be filled with a new key (self.sender) that contain predictions on the test_set for self.sender
-        :param test_knn: the data frame ('mid', 'recipients') returned by the method fit_predict()
-        :return: nothing ---> predictions_per_sender : the input dictionnary with the new key and the preiction for each message is modified within th func
-        """
-
-        predictions_per_sender[self.sender] = []
-        for (mid, pred) in zip(test_knn['mid'].values, test_knn['recipients'].values):
-            predictions_per_sender[self.sender].append([mid, pred])
-
-        return predictions_per_sender
+predictions_per_sender_knn = {} #initialise le dictionnary des prediction final pour knn
+predictions_per_sender_freq = {}#initialise le dictionnary des prediction final pour freq
+predictions_per_sender_RF = {}
 
 
+score_per_sender_RF = {} # dict to store score on the validation set for each sender
+score_per_sender_knn = {}
 
-if __name__ == '__main__':
+for p in range(len(all_senders)):
 
-    # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
-    path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
-    # path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
-
-    import sys
-    sys.path.append(path_to_code)
-
-    from paths import path
-
-    path_to_code, path_to_data, path_to_results = path("nicolas")
-
-    import numpy as np
-    from init import split, init_dic, csv_to_sub
-    import pandas as pd
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
-    from numpy.linalg import norm
-    from loss_function import score
-
-    training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
-
-    training_info = pd.read_csv(path_to_data + 'training_info.csv', sep=',', header=0)
-
-    test = pd.read_csv(path_to_data + 'test_set.csv', sep=',', header=0)
-
-    test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
-
-    print "Building dictionnaries"
-
-    _, all_senders, _, address_books, _ = init_dic(training, training_info)
-    X_train, X_dev, Y_train, Y_dev = split(training, training_info, 42)
-    #X_train2, Y_train2, X_test = csv_to_sub(training, training_info, test, test_info)
-
-    new_index_train = []
-    for array in X_train.values():
-        new_index_train.extend(array.tolist())
-
-    train_info = training_info.loc[training_info['mid'].isin(new_index_train)]
+    # Select a sender S
+    index = p
+    sender = all_senders[index]
+    X_train_S = X_train[sender]
+    X_dev_S = X_dev[sender]
+    Y_train_S = Y_train[sender]
+    Y_dev_S = Y_dev[sender]
+    ##############Create TF IDF vector from mails sent by sender S
 
 
+    # vectorize mails sent by a unique sender
+    #vectorizer_sender = CountVectorizer(stop_words='english')
+    vectorizer_sender = TfidfVectorizer(stop_words='english', sublinear_tf=True)
 
-    # set the hyper-parameters like : use_id, etc...
-    use_idf = True
-    print 'Parameter use_idf is set to {}'.format(use_idf)
-    K = 30
-    print 'parameter K is set to {}'.format(K)
-    max_df = 0.95
-    min_df = 1
-    print 'To build the vocabulary, the tfidfVectorizer will use max_df={} and min_df={}'.format(max_df, min_df)
-    sublinear_tf = True  # default is False in sklearn
-    if sublinear_tf:
-        print 'The tf is replaced by (1 + log(tf))'
+    # /!\ en ross_val on ne travaille pas avec le test_info.csv, mais on split le train info
+    # train
+    training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
+    training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
+    training_info_S_mat = training_info_S.as_matrix()
+    content_train = training_info_S_mat[:, 2]
+
+    vec_train = vectorizer_sender.fit_transform(content_train)
+    bow_train = vec_train.toarray()
+    # validation
+    test_info_S = training_info.loc[training_info['mid'].isin(X_dev_S)]
+    test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
+    test_info_S_mat = test_info_S.as_matrix()
+    content_test = test_info_S_mat[:, 2]
+
+    vec_test = vectorizer_sender.transform(content_test)
+    bow_test = vec_test.toarray()
+
+#   ##############################################
+    # on fait nos differend modeles : knn, RF
+    ##############################################
+
+    # knn
+    knn_predictor_ = knn_predictor(sender=sender)
+    test_knn = knn_predictor_.fit_predict(bow_train, bow_test, training_info_S, test_info_S,  K=K)
+    knn_predictor_.build_prediction_dictionnary(predictions_per_sender_knn, test_knn)
 
 
-    predictions_per_sender_knn = {} #initialise le dictionnary des prediction final pour knn
-    predictions_per_sender_freq = {}#initialise le dictionnary des prediction final pour freq
+    # random forest on tfidf
+    RF_predictor = Random_forest_predictor(sender = sender)
+    RF_predictor.fit_predict_build_pred_dictionnary(training_info_S, content_train, test_info_S, bow_train, bow_test,
+                                                    n_estimators, max_depth, n_jobs, predictions_per_sender_RF )
 
-    for p in range(len(all_senders)):
-        # Select a sender S
-        index = p
-        sender = all_senders[index]
-        X_train_S = X_train[sender]
-        X_dev_S = X_dev[sender]
-        Y_train_S = Y_train[sender]
+    sender_score_RF = 0
+    sender_score_knn = 0
+    for prediction_RF, prediction_knn, truth in zip(predictions_per_sender_RF[sender], predictions_per_sender_knn, Y_dev_S):
+        sender_score_RF += score(truth, prediction_RF[1])
+        sender_score_knn += score(truth, prediction_knn[1])
+
+    score_per_sender_RF[sender] = sender_score_RF / len(Y_dev_S)
+    score_per_sender_knn[sender] = sender_score_knn / len(Y_dev_S)
+
+    print 'score RF for {} (p={}) is : {}:'.format(sender, p, score_per_sender_RF[sender])
+    print 'score knn for {} (p={}) is : {}:'.format(sender, p, score_per_sender_knn[sender])
+
+
+print 'Total score RF :', np.mean(score_per_sender_RF.values())
+print 'Total score knn : ', np.mean(score_per_sender_knn.values())
+
+#########################################
+# On entraine l'aggragateur d'expert
+########################################
+
+senders_knn = []
+senders_RF = []
+for sender in score_per_sender_knn.keys():
+    if score_per_sender_knn[sender] < score_per_sender_RF[sender]:
+        senders_RF.append(sender)
+    else:
+        senders_knn.append(sender)
 
 
 
 
-        vectorizer_sender = TfidfVectorizer(max_df=max_df, min_df = min_df, stop_words='english', use_idf=use_idf,
-                                            sublinear_tf=sublinear_tf)
-
-        # create BoW for train
-        training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
-        training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
-        training_info_S_mat = training_info_S.as_matrix()
-        content_train = training_info_S_mat[:, 2]
-
-        vec_train = vectorizer_sender.fit_transform(content_train)
-        bow_train = vec_train.toarray()
-
-        # Create BoW for test
-        test_info_S = test_info.loc[test_info['mid'].isin(X_dev_S)]
-        test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
-        test_info_S_mat = test_info_S.as_matrix()
-        content_test = test_info_S_mat[:, 2]
-
-        vec_test = vectorizer_sender.transform(content_test)
-        bow_test = vec_test.toarray()
-
-
-        # on fait nos differend modeles : knn, frequency, centroids...
-
-        # knn
-        knn_predictor_ = knn_predictor(sender=sender)
-        test_knn = knn_predictor_.fit_predict(bow_train, bow_test, training_info_S, test_info_S,  K=K)
-        knn_predictor_.build_prediction_dictionnary(predictions_per_sender_knn, test_knn)
-
-
-        # freq
-        #TODO: adapter le code de baseline a nos nvelles stuctures de données (on peut aps copier coller)
-
-        # centroid (domitille s'en charge ?)
-
-        print "Sender Number : " + str(p)
 
 
 
