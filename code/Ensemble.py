@@ -123,7 +123,7 @@ for p in range(len(all_senders)):
 
     sender_score_RF = 0
     sender_score_knn = 0
-    for prediction_RF, prediction_knn, truth in zip(predictions_per_sender_RF[sender], predictions_per_sender_knn, Y_dev_S):
+    for prediction_RF, prediction_knn, truth in zip(predictions_per_sender_RF[sender], predictions_per_sender_knn[sender], Y_dev_S):
         sender_score_RF += score(truth, prediction_RF[1])
         sender_score_knn += score(truth, prediction_knn[1])
 

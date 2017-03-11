@@ -4,9 +4,7 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from numpy.linalg import norm
 
 
 
@@ -83,4 +81,3 @@ class knn_predictor():
         for (mid, pred) in zip(test_knn['mid'].values, test_knn['recipients'].values):
             predictions_per_sender[self.sender].append([mid, pred])
 
-        return predictions_per_sender
