@@ -48,7 +48,7 @@ train_info = training_info.loc[training_info['mid'].isin(new_index_train)]
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K = 30
+K = 23
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
@@ -60,7 +60,7 @@ if sublinear_tf:
 
 # Parametre de la random forest
 
-n_estimators, max_depth, n_jobs = 100, 100, -2 #mettez pas -1 ou alors faites rien pendant
+n_estimators, max_depth, n_jobs = 500, 100, -2 #mettez pas -1 ou alors faites rien pendant
 
 
 
@@ -149,6 +149,9 @@ for sender in score_per_sender_knn.keys():
     else:
         senders_knn.append(sender)
 
+
+print 'number of senders for kkn : ', len(senders_knn)
+print 'number of senders for RF : ', len(senders_RF)
 
 liste_score_aggregate_expert = []
 for sen in senders_knn:
