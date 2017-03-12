@@ -51,7 +51,7 @@ def get_all_recs_per_sender(train_info_S):
 n_estimators=100
 max_depth = 100
 max_features='log2'
-
+criterion = 'mae'
 score_per_sender = {}
 for p in range(len(all_senders)):
 
@@ -102,7 +102,8 @@ for p in range(len(all_senders)):
 
 
     n_test = bow_test.shape[0]
-    RF = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, max_features=max_features, n_jobs=-1)
+    RF = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, max_features=max_features, criterion= criterion,
+                               n_jobs=-2)
     RF.fit(bow_train, y_train)
     y_test = RF.predict(bow_test).reshape((n_test, n_class))
 

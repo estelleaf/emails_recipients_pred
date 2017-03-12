@@ -236,7 +236,7 @@ for sender in senders_RF:
     # random forest on tfidf
     RF_predictor = Random_forest_predictor(sender=sender)
     RF_predictor.fit_predict_build_pred_dictionnary(training_info_S, content_train, test_info_S, bow_train, bow_test,
-                                                    n_estimators, max_depth, n_jobs, predictions_per_sender_RF)
+                                                    n_estimators, max_depth, n_jobs, predictions_per_sender_for_submission)
 
     print "RF : Sender Name : " + str(sender)
 
@@ -261,3 +261,7 @@ if c !=2362:
 else:
     print 'everything went smoooothly (trust me, I do maths)'
 
+
+
+for sen in senders_RF:
+    print predictions_per_sender_for_submission[sen]
