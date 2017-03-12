@@ -150,107 +150,17 @@ for sender in score_per_sender_knn.keys():
         senders_knn.append(sender)
 
 
+liste_score_aggregate_expert = []
+for sen in senders_knn:
+    liste_score_aggregate_expert.append(score_per_sender_knn[sen])
 
-#############################################################"
-# On réentraine mais avec les differend sender RF ou Knn
-##############################################################
+for sen in senders_RF:
+    liste_score_aggregate_expert.append(score_per_sender_RF[sen])
 
-
-predictions_per_sender_aggregate_expert = {}
-score_per_sender_aggregate_expert = {}
-
-for sender in senders_knn:
-    X_train_S = X_train[sender]
-    X_dev_S = X_dev[sender]
-    Y_train_S = Y_train[sender]
-    Y_dev_S = Y_dev[sender]
-    ##############Create TF IDF vector from mails sent by sender S
-
-
-    # vectorize mails sent by a unique sender
-    #vectorizer_sender = CountVectorizer(stop_words='english')
-    vectorizer_sender = TfidfVectorizer(stop_words='english', sublinear_tf=True)
-
-    # /!\ en ross_val on ne travaille pas avec le test_info.csv, mais on split le train info
-    # train
-    training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
-    training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
-    training_info_S_mat = training_info_S.as_matrix()
-    content_train = training_info_S_mat[:, 2]
-
-    vec_train = vectorizer_sender.fit_transform(content_train)
-    bow_train = vec_train.toarray()
-    # validation
-    test_info_S = training_info.loc[training_info['mid'].isin(X_dev_S)]
-    test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
-    test_info_S_mat = test_info_S.as_matrix()
-    content_test = test_info_S_mat[:, 2]
-
-    vec_test = vectorizer_sender.transform(content_test)
-    bow_test = vec_test.toarray()
-
-
-   # predict with knn
-    knn_predictor_ = knn_predictor(sender=sender)
-    test_knn = knn_predictor_.fit_predict(bow_train, bow_test, training_info_S, test_info_S,  K=K)
-    knn_predictor_.build_prediction_dictionnary(predictions_per_sender_aggregate_expert, test_knn)
-
-    #score on validation set
-    sender_score = 0
-    for prediction, truth in zip(predictions_per_sender_aggregate_expert[sender], Y_dev_S):
-        sender_score += score(truth, prediction[1])
-
-    score_per_sender_aggregate_expert[sender] = sender_score / len(Y_train_S)
-
-
-
-for sender in senders_RF:
-
-    X_train_S = X_train[sender]
-    X_dev_S = X_dev[sender]
-    Y_train_S = Y_train[sender]
-    Y_dev_S = Y_dev[sender]
-    ##############Create TF IDF vector from mails sent by sender S
-
-
-    # vectorize mails sent by a unique sender
-    #vectorizer_sender = CountVectorizer(stop_words='english')
-    vectorizer_sender = TfidfVectorizer(stop_words='english', sublinear_tf=True)
-
-    # /!\ en ross_val on ne travaille pas avec le test_info.csv, mais on split le train info
-    # train
-    training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
-    training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
-    training_info_S_mat = training_info_S.as_matrix()
-    content_train = training_info_S_mat[:, 2]
-
-    vec_train = vectorizer_sender.fit_transform(content_train)
-    bow_train = vec_train.toarray()
-    # validation
-    test_info_S = training_info.loc[training_info['mid'].isin(X_dev_S)]
-    test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
-    test_info_S_mat = test_info_S.as_matrix()
-    content_test = test_info_S_mat[:, 2]
-
-    vec_test = vectorizer_sender.transform(content_test)
-    bow_test = vec_test.toarray()
-
-    # predict with random forest on tfidf
-    RF_predictor = Random_forest_predictor(sender = sender)
-    RF_predictor.fit_predict_build_pred_dictionnary(training_info_S, content_train, test_info_S, bow_train, bow_test,
-                                                    n_estimators, max_depth, n_jobs, predictions_per_sender_aggregate_expert )
-
-    #score on validation set
-    sender_score = 0
-    for prediction, truth in zip(predictions_per_sender_aggregate_expert[sender], Y_dev_S):
-        sender_score += score(truth, prediction[1])
-
-    score_per_sender_aggregate_expert[sender] = sender_score / len(Y_train_S)
-
-
-total_score_aggregate_expert = np.mean(score_per_sender_aggregate_expert.values())
-
+total_score_aggregate_expert = np.mean(liste_score_aggregate_expert)
 print total_score_aggregate_expert
+
+
 
 
 
