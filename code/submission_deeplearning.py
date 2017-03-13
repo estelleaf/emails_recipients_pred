@@ -14,10 +14,10 @@ from keras.layers import GlobalAveragePooling1D, Embedding
 from keras.models import Model
 from keras.preprocessing.text import Tokenizer
 from init import init_dic, csv_to_sub
-
 from keras.preprocessing.sequence import pad_sequences
-
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
+
+
 path_to_code, path_to_data, path_to_results = path("estelle")
 
 training = pd.read_csv(path_to_data + 'training_set.csv', sep=',', header=0)
@@ -31,62 +31,63 @@ X_train, Y_train, X_dev = csv_to_sub(training, training_info, test, test_info)
 
 predictions_per_sender = {}
 
+EMBEDDING_DIM = 50  
+MAX_NB_WORDS = 20000
+
 
 for p in range(len(all_senders)):
     index=p  
     sender=all_senders[index]
-    
-    EMBEDDING_DIM = 50  
     N_CLASSES = len(address_books[sender])
-    MAX_NB_WORDS = 20000
-          
+
+    
+    #Select the dataset proper to the sender       
     X_train_S = X_train[sender]
     training_info_S=training_info.loc[training_info['mid'].isin(X_train_S)]
     
     X_test_S = X_dev[sender]
     testing_info_S=test_info.loc[test_info['mid'].isin(X_test_S)]
     
-
     
     
-    
-    # get the raw text data
+    # Get the raw text data
     mails_train = training_info_S['body'].tolist()
     mails_test = testing_info_S['body'].tolist()
     
-    # finally, vectorize the text samples into a 2D integer tensor
+    # Tokenizing
     tokenizer = Tokenizer(nb_words=MAX_NB_WORDS, char_level=False)
     tokenizer.fit_on_texts(mails_train)
     sequences = tokenizer.texts_to_sequences(mails_train)
     sequences_test = tokenizer.texts_to_sequences(mails_test)
     word_index = tokenizer.word_index
-    print('Found %s unique tokens.' % len(word_index))
-    
+
+    #Building the sequences of words
     seq_lens = [len(s) for s in sequences]
     seq_test_lens = [len(s) for s in sequences_test]
     
     MAX_SEQUENCE_LENGTH = max( max(seq_lens),max(seq_test_lens))
     
-    # pad sequences with 0s
+    # Pad sequences with 0s
     x_train_S = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
     x_test_S = pad_sequences(sequences_test, maxlen=MAX_SEQUENCE_LENGTH)
        
     y_train_new=np.zeros((len(Y_train[sender]),len(address_books[sender])))
     
-    
+
+    #Index of recipients
     rec_index={}
     i=0
     for r in [elt[0] for elt in address_books[sender]]:
         rec_index[r]=i
         i+=1
     
-    
+    #fill in y_train based on our ouput shape
     index=[]
     for i,mail in enumerate(Y_train[sender]):
         for rec in Y_train[sender][i]:
             index.append(rec_index[rec])
         y_train_new[i][index]=1
-          
+         
     if y_train_new.shape[1]==1:
         predictions_per_sender[sender] = []
         for mid in X_dev[sender]:
@@ -149,6 +150,6 @@ with open(path_to_results + 'predictions_deeplearning.txt', 'wb') as my_file:
 
 
 if c !=2362:
-    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+    print 'Pb: the doc shoul have 2362 rows but there are {}'.format(c)
 else:
-    print 'everything went smoooothly (trust me, I do maths)'
+    print 'Ok'

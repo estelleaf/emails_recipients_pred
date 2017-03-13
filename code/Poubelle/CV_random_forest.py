@@ -33,7 +33,7 @@ test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 print "Building dictionnaries"
 
 _, all_senders, _, address_books, _ = init_dic(training, training_info)
-X_train, X_dev, Y_train, Y_dev = split(training, training_info, 1)
+X_train, X_dev, Y_train, Y_dev = split(training, training_info, )
 predictions_per_sender_RF = {}
 
 
@@ -48,10 +48,10 @@ def get_all_recs_per_sender(train_info_S):
     return all_recs
 
 
-n_estimators=100
-max_depth = 100
-max_features='log2'
-
+n_estimators = 200
+max_depth = 1000
+max_features= None #'sqrt'
+criterion = 'mse'
 score_per_sender = {}
 for p in range(len(all_senders)):
 
@@ -102,7 +102,8 @@ for p in range(len(all_senders)):
 
 
     n_test = bow_test.shape[0]
-    RF = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, max_features=max_features, n_jobs=-1)
+    RF = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, max_features=max_features, criterion= criterion,
+                               n_jobs=-2)
     RF.fit(bow_train, y_train)
     y_test = RF.predict(bow_test).reshape((n_test, n_class))
 

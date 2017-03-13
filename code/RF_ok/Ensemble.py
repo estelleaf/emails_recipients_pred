@@ -33,9 +33,9 @@ test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 
 print "Building dictionnaries"
 
+seed=1976
 _, all_senders, _, address_books, _ = init_dic(training, training_info)
-X_train, X_dev, Y_train, Y_dev = split(training, training_info, 1)
-#X_train2, Y_train2, X_test = csv_to_sub(training, training_info, test, test_info)
+X_train, X_dev, Y_train, Y_dev = split(training, training_info, seed)
 
 new_index_train = []
 for array in X_train.values():
@@ -60,7 +60,7 @@ if sublinear_tf:
 
 # Parametre de la random forest
 
-n_estimators, max_depth, n_jobs = 500, 100, -2 #mettez pas -1 ou alors faites rien pendant
+n_estimators, max_depth, n_jobs = 200, 1000, -2 #mettez pas -1 ou alors faites rien pendant
 
 
 
@@ -165,7 +165,100 @@ print total_score_aggregate_expert
 
 
 
+##########################################################
+# Submission (we use all train and we predict on test
+############################################################
+
+X_train, Y_train, X_test = csv_to_sub(training, training_info, test, test_info)
+predictions_per_sender_for_submission = {}
+
+for sender in senders_knn:
+
+    # Select a sender S
+    X_train_S = X_train[sender]
+    X_dev_S = X_test[sender]
+
+
+    # vectorize mails sent by a unique sender
+    vectorizer_sender = TfidfVectorizer(max_df=0.95, stop_words='english', use_idf=use_idf, sublinear_tf=sublinear_tf)
+
+    # train
+    training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
+    training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
+    training_info_S_mat = training_info_S.as_matrix()
+    content_train = training_info_S_mat[:, 2]
+
+    vec_train = vectorizer_sender.fit_transform(content_train)
+    bow_train = vec_train.toarray()
+    # test
+    test_info_S = test_info.loc[test_info['mid'].isin(X_dev_S)]
+    test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
+    test_info_S_mat = test_info_S.as_matrix()
+    content_test = test_info_S_mat[:, 2]
+
+    vec_test = vectorizer_sender.transform(content_test)
+    bow_test = vec_test.toarray()
+
+    # knn
+    knn_predictor_ = knn_predictor(sender=sender)
+    test_knn = knn_predictor_.fit_predict(bow_train, bow_test, training_info_S, test_info_S, K=K)
+    knn_predictor_.build_prediction_dictionnary(predictions_per_sender_for_submission, test_knn)
+
+    print "KNN : Sender Name : " + str(sender)
+
+
+for sender in senders_RF:
+
+    # Select a sender S
+    X_train_S = X_train[sender]
+    X_dev_S = X_test[sender]
+    Y_train_S = Y_train[sender]
+
+    # vectorize mails sent by a unique sender
+    vectorizer_sender = TfidfVectorizer(max_df=0.95, stop_words='english', use_idf=use_idf, sublinear_tf=sublinear_tf)
+
+    # train
+    training_info_S = training_info.loc[training_info['mid'].isin(X_train_S)]
+    training_info_S = training_info_S.set_index(np.arange(len(training_info_S)))
+    training_info_S_mat = training_info_S.as_matrix()
+    content_train = training_info_S_mat[:, 2]
+
+    vec_train = vectorizer_sender.fit_transform(content_train)
+    bow_train = vec_train.toarray()
+    # test
+    test_info_S = test_info.loc[test_info['mid'].isin(X_dev_S)]
+    test_info_S = test_info_S.set_index(np.arange(len(test_info_S)))
+    test_info_S_mat = test_info_S.as_matrix()
+    content_test = test_info_S_mat[:, 2]
+
+    vec_test = vectorizer_sender.transform(content_test)
+    bow_test = vec_test.toarray()
+
+    # random forest on tfidf
+    RF_predictor = Random_forest_predictor(sender=sender)
+    RF_predictor.fit_predict_build_pred_dictionnary(training_info_S, content_train, test_info_S, bow_train, bow_test,
+                                                    n_estimators, max_depth, n_jobs, predictions_per_sender_for_submission)
+
+    print "RF : Sender Name : " + str(sender)
 
 
 
+#######################"
+# register submission
+#########################"
+
+c=0 # compteur : a priori faut que ce soit 2362
+with open(path_to_results + 'predictions_mix_knn_RF_see_{}_with__max_depth_{}_and_nb_estimators_to_{}__use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(seed, max_depth, n_estimators, use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
+    my_file.write('mid,recipients' + '\n')
+    for sender, preds_for_sender in predictions_per_sender_for_submission.iteritems():
+
+        for (mid, pred) in preds_for_sender:
+            c += 1
+            my_file.write(str(mid) + ',' + ' '.join(pred) + '\n')
+
+
+if c !=2362:
+    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+else:
+    print 'everything went smoooothly (trust me, I do maths)'
 
