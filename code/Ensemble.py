@@ -33,8 +33,9 @@ test_info = pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 
 print "Building dictionnaries"
 
+seed=1976
 _, all_senders, _, address_books, _ = init_dic(training, training_info)
-X_train, X_dev, Y_train, Y_dev = split(training, training_info, 1)
+X_train, X_dev, Y_train, Y_dev = split(training, training_info, seed)
 
 new_index_train = []
 for array in X_train.values():
@@ -59,7 +60,7 @@ if sublinear_tf:
 
 # Parametre de la random forest
 
-n_estimators, max_depth, n_jobs = 200, 200, -2 #mettez pas -1 ou alors faites rien pendant
+n_estimators, max_depth, n_jobs = 200, 1000, -2 #mettez pas -1 ou alors faites rien pendant
 
 
 
@@ -247,7 +248,7 @@ for sender in senders_RF:
 #########################"
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_mix_knn_RF_with__max_depth_{}_and_nb_estimators_to_{}__use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(max_depth, n_estimators, use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
+with open(path_to_results + 'predictions_mix_knn_RF_see_{}_with__max_depth_{}_and_nb_estimators_to_{}__use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(seed, max_depth, n_estimators, use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender_for_submission.iteritems():
 
@@ -261,7 +262,3 @@ if c !=2362:
 else:
     print 'everything went smoooothly (trust me, I do maths)'
 
-
-
-for sen in senders_RF:
-    print predictions_per_sender_for_submission[sen]

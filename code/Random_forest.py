@@ -5,7 +5,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 
 def get_all_recs_per_sender(train_info_S):
@@ -59,12 +59,14 @@ class Random_forest_predictor:
 
         n_test = bow_test.shape[0]
         RF = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, max_features='log2', n_jobs=n_jobs)
+        #RF = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, max_features='log2', n_jobs=n_jobs)
+
         RF.fit(bow_train, y_train)
         y_test = RF.predict(bow_test).reshape((n_test, n_class))
 
         #sanity check : if n_recipient is <10 from the begining (e.g. p=37 has only one correspondant)
         if n_class < 10:
-            # we can't tke the 10 bets cause there are less than 10 recs
+            # we can't tke the 10 best cause there are less than 10 recs in the train
             if n_class == 1:
                 print n_class
                 predictions_per_sender_RF[self.sender] = []
