@@ -24,7 +24,7 @@ def score_en_mode_numpy(y_true,y_pred):
             temp[i] = float(c)/(i+1)
         else :
             temp[i] = 0
-    return sum(temp)/min(y_true.shape[0],10)
+    return sum(temp)/min(y_true.shape[0], 10)
 
 
 def score(y_true,y_pred):

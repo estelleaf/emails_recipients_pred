@@ -6,14 +6,19 @@ Created on Thu Feb 23 11:50:30 2017
 @author: estelleaflalo
 """
 
-# import sys pour ajouter le path_to_code pour que import init fonctionne
-path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
-#path_to_code = "/Users/estelleaflalo/Desktop/M2_Data_Science/Second_Period/Text_and_Graph/Project/text_and_graph/code/"
 
 import sys
-sys.path.append(path_to_code)
+
+
+#path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
+#sys.path.append(path_to_code)
+
 
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
+path_to_code, path_to_data, path_to_results = path("nicolas")
+#path_to_code, path_to_data, path_to_results = path("domitille")
+#path_to_code, path_to_data, path_to_results = path("victor")
+sys.path.append(path_to_code)
 
 
 
@@ -24,6 +29,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from numpy.linalg import norm
 from sklearn.metrics.pairwise import linear_kernel
+from sklearn.metrics.pairwise import euclidean_distances
 
 # from loss_function import score
 # from tfidf_centroid import centroid
@@ -39,7 +45,7 @@ def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
         # get K-nearest neighbors in term of cosine(tfidf)
 
 
-        cosine_similarities = cosine_similarity(bow_test[i][np.newaxis, :], bow_train).flatten()
+        cosine_similarities = euclidean_distances(bow_test[i][np.newaxis, :], bow_train).flatten()
         temp = np.concatenate((training_info_S['recipients'].values[:, np.newaxis], cosine_similarities[:, np.newaxis]),
                               axis=1)
         temp = temp[temp[:, 1].argsort()[::-1].tolist()]
@@ -85,7 +91,10 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=40
+
+K=20
+
+
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
@@ -128,8 +137,12 @@ for p in range(len(all_senders)):
 
     # compute K-nn for each message m in the test set
 
+
+    # training_info_S['recipients'][training_info_S['mid']==392289].tolist()[0].split(' ')
+
     test_knn = Knn(bow_train, bow_test, training_info_S, test_info_S, K=K)
     test_knn['mid'] = test_knn['mid'].astype(int)
+
 
     # add a entry corresponding to the sendr in the dictionnary
     predictions_per_sender[sender] = []
@@ -139,8 +152,9 @@ for p in range(len(all_senders)):
     print "Sender Number : " + str(p)
 
 
-c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
+c=0
+with open(path_to_results + 'predictions_knn20_euclideandist.txt', 'wb') as my_file:
+
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
