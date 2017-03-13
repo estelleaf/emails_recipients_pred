@@ -97,7 +97,6 @@ print 'Parameter use_idf is set to {}'.format(use_idf)
 K=20
 
 
-
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
