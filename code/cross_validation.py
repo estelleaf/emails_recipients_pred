@@ -39,7 +39,7 @@ def centroid(sender,dataset_info,bow):
         i+=1
     return df_tfidf
 
-def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
+def Knn(bow_train, bow_test, training_info_S, test_info_S, K=20):
     df_knn = pd.DataFrame(columns=('mid', 'recipients'))
 
     for i, mid in enumerate(test_info_S['mid']):
@@ -87,14 +87,14 @@ test_info= pd.read_csv(path_to_data + 'test_info.csv', sep=',', header=0)
 
 
 print "Splitting data"
-X_train, X_dev, Y_train,Y_dev=split(training,training_info)
+X_train, X_dev, Y_train,Y_dev=split(training,training_info,42)
 
 print "Building dictionnaries"
 all_users, all_senders,all_recs,address_books ,emails_ids_per_sender=init_dic(training,training_info)
 
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=30
+K=20
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 print 'To build the vocabulary, the tfidfVectorizer will use max_df={}'.format(max_df)
@@ -220,6 +220,8 @@ for s in scores_per_sender_knn.keys():
 print 'Global Score with TFIDF CENTROID:', np.mean(scores_per_sender_centroid.values())
 print 'Global Score with KNN:', np.mean(scores_per_sender_knn.values())
 print 'Global Score with KNN:', np.mean(scores_per_sender_frequency.values())
+
+##senders_frequency = senders_frequency + senders_centroid
 
 """ FREQUENCE FOR BAD RESULTS """
 

@@ -22,7 +22,7 @@ from sklearn.metrics.pairwise import linear_kernel
 # from tfidf_centroid import centroid
 
 
-def Knn(bow_train, bow_test, training_info_S, test_info_S, K=30):
+def Knn(bow_train, bow_test, training_info_S, test_info_S, K=20):
     df_knn = pd.DataFrame(columns=('mid', 'recipients'))
 
     for i, mid in enumerate(test_info_S['mid']):
@@ -92,7 +92,7 @@ predictions_per_sender = {}
 # set the hyper-parameters like : use_id, etc...
 use_idf = True
 print 'Parameter use_idf is set to {}'.format(use_idf)
-K=30
+K=20
 print 'parameter K is set to {}'.format(K)
 max_df = 0.95
 min_df = 1
@@ -159,7 +159,7 @@ for sender in senders_frequency:
 
 
 c=0 # compteur : a priori faut que ce soit 2362
-with open(path_to_results + 'predictions_mix_knn_frequency_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
+with open(path_to_results + '10_03_predictions_mix_knn_frequency_with_use_idf_set_to_{}_max_df_{}_and_min_df_{}_and_K_to_{}_and_sublinear_tf_is_{}.txt'.format(use_idf, max_df, min_df, K, sublinear_tf), 'wb') as my_file:
     my_file.write('mid,recipients' + '\n')
     for sender, preds_for_sender in predictions_per_sender.iteritems():
 
