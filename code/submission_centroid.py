@@ -68,7 +68,20 @@ min_df = 0.05
 print 'To build the covabulary, the tfidfVectorizer witll use max_df={} and min_df={}'.format(max_df, min_df)
 
 
-
+#Creation of centroids for each recipient
+def centroid(sender,dataset_info,bow):
+    df_tfidf = pd.DataFrame(columns=('recipient','tf_idf'))
+    i=0
+    for r in [elt[0] for elt in address_books[sender]]:
+        info_recip_index=dataset_info[dataset_info['recipients'].str.contains(r)].index.tolist() #"rick.dietz@enron.com"
+        bow_recip=bow[info_recip_index]  
+        norma=norm(bow_recip, axis=1, ord=2) 
+        bow_recip_normzd=bow_recip.astype(np.float) / (norma[:,None]+10**(-7))
+        centroid_s_r= np.sum(bow_recip_normzd,axis=0) 
+        df_tfidf.loc[i]  = [r, centroid_s_r]
+        i+=1
+    return df_tfidf
+    
 for p in range(len(all_senders)):
     
     #Select a sender S
@@ -102,24 +115,7 @@ for p in range(len(all_senders)):
     
     vec_test = vectorizer_sender.transform(content_test)
     bow_test=vec_test.toarray()
-    
-    
-    
-    #Creation of centroids for each recipient
-    def centroid(sender,dataset_info,bow):
-        df_tfidf = pd.DataFrame(columns=('recipient','tf_idf'))
-        i=0
-        for r in [elt[0] for elt in address_books[sender]]:
-            info_recip_index=dataset_info[dataset_info['recipients'].str.contains(r)].index.tolist() #"rick.dietz@enron.com"
-            bow_recip=bow[info_recip_index]  
-            norma=norm(bow_recip, axis=1, ord=2) 
-            bow_recip_normzd=bow_recip.astype(np.float) / (norma[:,None]+10**(-7))
-            centroid_s_r= np.sum(bow_recip_normzd,axis=0) 
-            df_tfidf.loc[i]  = [r, centroid_s_r]
-            i+=1
-        return df_tfidf
-
-        
+            
     
         
     centroid_S_df=centroid(sender,training_info_S,bow_train)
@@ -158,7 +154,7 @@ with open(path_to_results + 'predictions_knn_with_use_idf_set_to_{}_max_df_{}_an
 
 
 if c !=2362:
-    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+    print 'Pb: the doc shoul have 2362 rows but there are {}'.format(c)
 else:
-    print 'everything went smoooothly (trust me, I do maths)'
+    print 'Ok'
 
