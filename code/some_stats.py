@@ -41,6 +41,16 @@ def f(string_liste):
 
     return res
 
+print 'for train :'
+print '1997', '1997' in f(training_info['date'])
+print '1998', '1998' in f(training_info['date'])
+print '1999', '1999' in f(training_info['date'])
+print '2000', '2000' in f(training_info['date'])
+print '2001', '2001' in f(training_info['date'])
+print '2002', '2002' in f(training_info['date'])
+print '2003', '2003' in f(training_info['date'])
+
+print 'for test :'
 print '1998', '1998' in f(test_info['date'])
 print '1999', '1999' in f(test_info['date'])
 print '2000', '2000' in f(test_info['date'])
