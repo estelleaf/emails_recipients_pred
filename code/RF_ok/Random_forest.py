@@ -24,17 +24,20 @@ def get_all_recs_per_sender(train_info_S):
 
 
 class Random_forest_predictor:
-    """ Classe pour predire à l'aide de rendom forest. Basé sur le randomforestregressor de scikit """
+    """ Class to predict recipients for one sender.
+    Based on scikit RandomForestRegressor (we tried classifier but regressor gives
+     better performance on a validation set.
+     """
 
     def __init__(self, sender):
-        self.sender= sender
+        self.sender = sender
 
 
 
     def fit_predict_build_pred_dictionnary(self, training_info_S, content_train, test_info_S, bow_train, bow_test,
                                            n_estimators, max_depth, n_jobs, predictions_per_sender_RF ):
         """
-        Method 'tout en un', on fit on predit et on créé un nouvelle entrée dans le dico prediction_per_sender_RF
+        Method 'all-in-one', we fit/predict/create a new entry in the dictionnary : 'prediction_per_sender_RF'
         :param training_info_S: A dataframe similar to train_info, but for one sender only, since we work sender by sender
         :param content_train: A np array of shape (n_mail,) containing the content of each mail in one single string
         :param test_info_S: A dataFrame similar to test_info, but for one sender only, since we work sender by sender
