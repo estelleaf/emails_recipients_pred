@@ -9,7 +9,11 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 
 def get_all_recs_per_sender(train_info_S):
-    """ For a fixed sender, return the list of all the recipients of this sender in the training set"""
+    """
+    For a fixed sender, return the list of all the recipients of this sender in the training set.
+    :param train_info_S: A structure like train_info, but for one sender only, since we work sender by sender
+    :return: a list of all the recipients for the current sender
+    """
     all_recs = []
     for recs in train_info_S['recipients'].values:
         all_recs.extend(recs.split(' '))
@@ -31,15 +35,15 @@ class Random_forest_predictor:
                                            n_estimators, max_depth, n_jobs, predictions_per_sender_RF ):
         """
         Method 'tout en un', on fit on predit et on créé un nouvelle entrée dans le dico prediction_per_sender_RF
-        :param training_info_S:
-        :param content_train:
-        :param test_info_S:
-        :param bow_train:
-        :param bow_test:
-        :param n_estimators:
-        :param max_depth:
-        :param n_jobs:
-        :param predictions_per_sender_RF:
+        :param training_info_S: A dataframe similar to train_info, but for one sender only, since we work sender by sender
+        :param content_train: A np array of shape (n_mail,) containing the content of each mail in one single string
+        :param test_info_S: A dataFrame similar to test_info, but for one sender only, since we work sender by sender
+        :param bow_train: Dense numpy matrix which contain, for each mail in the train, it's TfIdf vector
+        :param bow_test: Dense numpy matrix which contain, for each mail in the test, it's TfIdf vector
+        :param n_estimators: scikit argument of random forest
+        :param max_depth: scikit argument of random forest
+        :param n_jobs: scikit argument for parralelism
+        :param predictions_per_sender_RF: A dictionnary for which we will create a new entry with key : self.sender
 
         :return: Nothing, the dict is modified inside the method
         """
@@ -66,7 +70,7 @@ class Random_forest_predictor:
 
         #sanity check : if n_recipient is <10 from the begining (e.g. p=37 has only one correspondant)
         if n_class < 10:
-            # we can't tke the 10 best cause there are less than 10 recs in the train
+            # we can't take the 10 best cause there are less than 10 recs in the train
             if n_class == 1:
                 print n_class
                 predictions_per_sender_RF[self.sender] = []
