@@ -10,9 +10,6 @@ Created on Thu Feb 23 11:50:30 2017
 import sys
 
 
-#path_to_code = 'C:/Nicolas/M2 MVA/ALTEGRAD/Kaggle/text_and_graph/code'
-#sys.path.append(path_to_code)
-
 
 from paths import path # on a besoin de path_to_code pour pouvoir importer paths.py, le serpent se mort la queue :D
 path_to_code, path_to_data, path_to_results = path("nicolas")
@@ -167,6 +164,6 @@ with open(path_to_results + 'predictions_knn20_euclideandist.txt', 'wb') as my_f
 
 
 if c !=2362:
-    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+    print 'Pb: should have 2362 rows but there are {}'.format(c)
 else:
-    print 'everything went smoooothly (trust me, I do maths)'
+    print 'Ok'

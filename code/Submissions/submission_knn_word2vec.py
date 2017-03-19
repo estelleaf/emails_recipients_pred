@@ -304,6 +304,7 @@ with open(path_to_results + 'predictions_knn_with_word2vec.txt', 'wb') as my_fil
 
 
 if c !=2362:
-    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+    print 'Pb: the doc shoul have 2362 rows but there are {}'.format(c)
 else:
-    print 'everything went smoooothly (trust me, I do maths)'
+    print 'Ok'
+

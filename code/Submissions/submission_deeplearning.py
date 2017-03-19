@@ -150,6 +150,6 @@ with open(path_to_results + 'predictions_deeplearning.txt', 'wb') as my_file:
 
 
 if c !=2362:
-    print 'Pb: the doc shoul have 2362 rows but there are {}'.format(c)
+    print 'Pb: the doc should have 2362 rows but there are {}'.format(c)
 else:
     print 'Ok'

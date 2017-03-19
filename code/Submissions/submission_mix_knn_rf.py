@@ -258,7 +258,7 @@ with open(path_to_results + 'predictions_mix_knn_RF_see_{}_with__max_depth_{}_an
 
 
 if c !=2362:
-    print 'Il y a un pb ! Le doc devrait avoir 2362 lignes et il en a {}'.format(c)
+    print 'pb : the doc should have 2362 rows but has {}'.format(c)
 else:
-    print 'everything went smoooothly (trust me, I do maths)'
+    print 'Ok'
 
